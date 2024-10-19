@@ -58,6 +58,7 @@ C_SOURCES =  \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c \
+../../Drivers/BSP/STM32H747I-DISCO/stm32h747i_discovery.c \
 ../../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c  
 
 # ASM sources
@@ -123,7 +124,10 @@ C_INCLUDES =  \
 -I../../Drivers/STM32H7xx_HAL_Driver/Inc \
 -I../../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy \
 -I../../Drivers/CMSIS/Device/ST/STM32H7xx/Include \
--I../../Drivers/CMSIS/Include
+-I../../Drivers/CMSIS/Include \
+-I../../Drivers/BSP/STM32H747I-DISCO \
+-I../../Common/Inc
+
 
 
 # compile gcc flags
