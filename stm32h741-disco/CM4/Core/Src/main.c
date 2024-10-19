@@ -37,12 +37,12 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
+#define DELAY 1000
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
-#define DELAY 1000
 
 /* USER CODE END PM */
 
