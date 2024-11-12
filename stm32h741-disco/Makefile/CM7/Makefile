@@ -58,7 +58,8 @@ C_SOURCES =  \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c \
 ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c \
-../../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c  
+../../Drivers/BSP/STM32H747I-DISCO/stm32h747i_discovery_lcd.c \
+../../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -126,7 +127,10 @@ C_INCLUDES =  \
 -I../../Drivers/CMSIS/Include \
 -I../../Drivers/BSP/STM32H747I-DISCO \
 -I../../Common/Inc \
--I../../Drivers/BSP/Components/otm8009a
+-I../../Drivers/BSP/Components/otm8009a \
+-I../../Drivers/BSP/Components/Common \
+-I../../Drivers/BSP/Components/is42s32800j \
+-I../../Utilities/lcd
 
 
 # compile gcc flags

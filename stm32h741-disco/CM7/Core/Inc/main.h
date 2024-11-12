@@ -32,6 +32,17 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <lcd.h>
+#include <otm8009a.h>
+#include <stdio.h>
+#include <stm32_lcd.h>
+#include <stm32h747i_discovery.h>
+#include <stm32h747i_discovery_bus.h>
+#include <stm32h747i_discovery_lcd.h>
+#include <stm32h747i_discovery_sdram.h>
+#include <stm32h747i_discovery_ts.h>
+#include <string.h>
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -73,6 +84,7 @@ void Error_Handler(void);
 #define LED4_GPIO_Port GPIOI
 
 /* USER CODE BEGIN Private defines */
+#define LCD_FRAME_BUFFER 0xD0000000
 
 /* USER CODE END Private defines */
 
