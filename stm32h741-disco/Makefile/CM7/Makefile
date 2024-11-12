@@ -125,7 +125,8 @@ C_INCLUDES =  \
 -I../../Drivers/CMSIS/Device/ST/STM32H7xx/Include \
 -I../../Drivers/CMSIS/Include \
 -I../../Drivers/BSP/STM32H747I-DISCO \
--I../../Common/Inc
+-I../../Common/Inc \
+-I../../Drivers/BSP/Components/otm8009a
 
 
 # compile gcc flags

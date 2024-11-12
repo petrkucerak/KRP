@@ -23,15 +23,82 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <stdio.h>
+#include <stm32h747i_discovery_ts.h>
+#include <stm32h7xx_hal_dsi.h>
+#include <stm32h7xx_hal_ltdc.h>
+#include <string.h>
+#include <otm8009a.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+extern LTDC_HandleTypeDef hlcd_ltdc;
+extern DSI_HandleTypeDef hlcd_dsi;
+DSI_VidCfgTypeDef hdsivideo_handle;
+DSI_CmdCfgTypeDef CmdCfg;
+DSI_LPCmdTypeDef LPCmd;
+DSI_PLLInitTypeDef dsiPllInit;
+static RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
+OTM8009A_Object_t *pObj;
+
+typedef enum {
+   FRONT_SCREEN,
+   TURNON_SCENE,
+   TIMER_CONFIG_SCENE,
+   WAITING_SCENE
+} Scene_t;
+typedef enum { PUSH_BUTTON, TIMER_BUTTON, NONE } Button_type_t;
+
+typedef struct {
+   Scene_t scene;
+   uint8_t _delay;
+   char status_message[50];
+   char title[50];
+   uint32_t status_color;
+   uint16_t progress_bar;
+   uint32_t timer;
+   uint32_t config_timer;
+   uint32_t timer_left;
+   uint32_t timer_start_time;
+   uint32_t button_left_color;
+   Button_type_t button_left_type;
+   uint32_t button_right_color;
+   Button_type_t button_right_type;
+} App_t;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define VSYNC 1
+#define VBP 1
+#define VFP 1
+#define VACT 480
+#define HSYNC 1
+#define HBP 1
+#define HFP 1
+#define HACT 800
+
+#define TS_ACCURACY 2
+#define TS_INSTANCE 0
+
+#define SECOND 1000
+
+#define APP_COLOR_BACKGROUND UTIL_LCD_COLOR_CUSTOM_Stone
+#define APP_COLOR_RED UTIL_LCD_COLOR_RED
+#define APP_COLOR_BLUE UTIL_LCD_COLOR_CUSTOM_Blue
+#define APP_COLOR_TEXT UTIL_LCD_COLOR_WHITE
+#define APP_COLOR_GREEN UTIL_LCD_COLOR_DARKGREEN
+#define APP_COLOR_YELLOW UTIL_LCD_COLOR_CUSTOM_Yellow
+#define APP_COLOR_STONE UTIL_LCD_COLOR_BLACK
+
+#define LAYER0_ADDRESS (LCD_FB_START_ADDRESS)
+
+#define DELAY 1000
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -42,13 +109,13 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
-#define DELAY 1000
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+static int32_t pending_buffer = -1;
 
 /* USER CODE END PV */
 

@@ -32,12 +32,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include <stdio.h>
-#include <stm32h747i_discovery_ts.h>
-#include <stm32h7xx_hal_dsi.h>
-#include <stm32h7xx_hal_ltdc.h>
-#include <string.h>
-
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
