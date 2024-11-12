@@ -123,7 +123,9 @@ C_INCLUDES =  \
 -I../../Drivers/STM32H7xx_HAL_Driver/Inc \
 -I../../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy \
 -I../../Drivers/CMSIS/Device/ST/STM32H7xx/Include \
--I../../Drivers/CMSIS/Include
+-I../../Drivers/CMSIS/Include \
+-I../../Drivers/BSP/STM32H747I-DISCO \
+-I../../Common/Inc
 
 
 # compile gcc flags
