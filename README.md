@@ -13,6 +13,7 @@ Based on STM32H741-DISCO
 ```sh
 cd Makefile
 make
+PATH=$PATH:/opt/gcc-arm-none-eabi/bin
 ```
 
 ## User controller
