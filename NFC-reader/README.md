@@ -35,3 +35,14 @@ The adapted command mode, enables the system to input a stream of pixel from the
 > Screen tearing is a visual artifact in video display where a display device shows information from multiple frames in a single screen draw. The artifact occurs when the video feed to the device is not synchronized with the display's refresh rate. (*Source: [Wikipedia](https://en.wikipedia.org/wiki/Screen_tearing)*)
 
 Adapted command mode of operation supports: 16 bpp, 18 bpp, and 24 bpp RGB. In my project I choose 24 bpp.
+
+### BSP components
+
+BSP components are imported as a submodule. To initialize them use command
+
+```sh
+git submodule update --recursive
+```
+
+> [!WARNING]
+> Regeneration code with using STM32CubeMX remove BSP components from CMake list files. So, do not forget return origin BSP source files imports. Relative to [CM7/mx-generated.cmake](CM7/mx-generated.cmake)
