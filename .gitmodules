@@ -1,0 +1,15 @@
+[submodule "NFC-reader/Drivers/BSP/stm32h747i-disco-bsp"]
+	path = NFC-reader/Drivers/BSP/stm32h747i-disco-bsp
+	url = https://github.com/STMicroelectronics/stm32h747i-disco-bsp.git
+[submodule "NFC-reader/Drivers/BSP/Components/Common"]
+	path = NFC-reader/Drivers/BSP/Components/Common
+	url = https://github.com/STMicroelectronics/stm32-bsp-common.git
+[submodule "NFC-reader/Drivers/BSP/Components/ft6x06"]
+	path = NFC-reader/Drivers/BSP/Components/ft6x06
+	url = https://github.com/STMicroelectronics/stm32-ft6x06.git
+[submodule "NFC-reader/Drivers/BSP/Components/is42s32800j"]
+	path = NFC-reader/Drivers/BSP/Components/is42s32800j
+	url = https://github.com/STMicroelectronics/stm32-is42s32800j.git
+[submodule "NFC-reader/Drivers/BSP/Components/otm8009a"]
+	path = NFC-reader/Drivers/BSP/Components/otm8009a
+	url = https://github.com/STMicroelectronics/stm32-otm8009a.git
