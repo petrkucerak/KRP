@@ -16,6 +16,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../Drivers/CMSIS/Include
+    ../Drivers/BSP/stm32h747i-disco-bsp
+    ../Drivers/BSP/Components/Common
+    ../Drivers/BSP/Components/ft6x06
+    ../Drivers/BSP/Components/otm8009a
+    ../Drivers/BSP/Components/is42s32800j
 )
 
 # Add sources to executable
