@@ -46,3 +46,12 @@ git submodule update --recursive
 
 > [!WARNING]
 > Regeneration code with using STM32CubeMX remove BSP components from CMake list files. So, do not forget return origin BSP source files imports. Relative to [CM7/mx-generated.cmake](CM7/mx-generated.cmake)
+
+#### List of BSP components
+
+| name        | source                                                  | description      |
+| ----------- | ------------------------------------------------------- | ---------------- |
+| Common      | https://github.com/STMicroelectronics/stm32-bsp-common  | Common component |
+| ft6x06      | https://github.com/STMicroelectronics/stm32-ft6x06      | Touch screen     |
+| is42s32800j | https://github.com/STMicroelectronics/stm32-is42s32800j | SDRAM            |
+| otm8009a    | https://github.com/STMicroelectronics/stm32-otm8009a    | LCD              |
