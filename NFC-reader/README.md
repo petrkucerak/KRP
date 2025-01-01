@@ -36,6 +36,12 @@ The adapted command mode, enables the system to input a stream of pixel from the
 
 Adapted command mode of operation supports: 16 bpp, 18 bpp, and 24 bpp RGB. In my project I choose 24 bpp.
 
+### OTM8009A
+
+The LCD (`B-LCD40-DSI1`) is controlled by `otm8009a` integrated driver.
+
+
+
 ### BSP components
 
 BSP components are imported as a submodule. To initialize them use command
