@@ -16,25 +16,16 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../Drivers/CMSIS/Include
-    ../Drivers/BSP/stm32h747i-disco-bsp
-    ../Drivers/BSP/Components/Common
-    ../Drivers/BSP/Components/ft6x06
-    ../Drivers/BSP/Components/otm8009a
-    ../Drivers/BSP/Components/is42s32800j
 )
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
-    ./Core/Src/dma2d.c
-    ./Core/Src/dsihost.c
-    ./Core/Src/ltdc.c
     ./Core/Src/memorymap.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
-    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c
@@ -50,9 +41,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c
-    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dsi.c
-    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.c
-    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc_ex.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
