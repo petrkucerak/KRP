@@ -61,3 +61,15 @@ git submodule update --recursive
 | ft6x06      | https://github.com/STMicroelectronics/stm32-ft6x06      | Touch screen     |
 | is42s32800j | https://github.com/STMicroelectronics/stm32-is42s32800j | SDRAM            |
 | otm8009a    | https://github.com/STMicroelectronics/stm32-otm8009a    | LCD              |
+
+
+## Shorts
+
+| name  | description                                        |
+| ----- | -------------------------------------------------- |
+| BSP   | board support package                              |
+| CMSIS | Cortex microcontroller software interface standard |
+| LTDC  | LCD TFT display controller                         |
+| MSP   | MCU specific package                               |
+| SDRAM | SDRAM external memory                              |
+| SRAM  | SRAM external memory                               |
