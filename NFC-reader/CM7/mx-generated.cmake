@@ -21,6 +21,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/BSP/Components/ft6x06
     ../Drivers/BSP/Components/otm8009a
     ../Drivers/BSP/Components/is42s32800j
+    ../Utilities/lcd
 )
 
 # Add sources to executable
@@ -47,6 +48,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery.c
+    ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_lcd.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
