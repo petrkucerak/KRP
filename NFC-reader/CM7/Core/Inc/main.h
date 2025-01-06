@@ -47,7 +47,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define LCD_FRAME_BUFFER 0xD0000000
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

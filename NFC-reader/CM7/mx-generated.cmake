@@ -29,6 +29,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/memorymap.c
+    ./Core/Src/custom_lcd.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
