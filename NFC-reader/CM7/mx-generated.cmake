@@ -39,6 +39,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dsi.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c
@@ -47,9 +49,16 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc_ex.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_lcd.c
+    ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_sdram.c
+    ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_bus.c
+    ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_ts.c
+    ../Drivers/BSP/Components/otm8009a/otm8009a.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
+    ../Utilities/lcd/stm32_lcd.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
     ./Core/Startup/startup_stm32h747xx_CM7.s
