@@ -95,6 +95,7 @@ static int32_t pending_buffer = -1;
 /* USER CODE BEGIN PFP */
 static void SystemClock_Config(void);
 static void Error_Handler(void);
+static void MPU_Config(void);
 
 /* LCD screen functions */
 static uint8_t LCD_Init(void);
@@ -156,7 +157,8 @@ int main(void)
    HAL_Init();
 
    /* USER CODE BEGIN Init */
-
+   /* Configure the MPU attributes as Write Through for SDRAM*/
+   MPU_Config();
    /* USER CODE END Init */
 
    /* Configure the system clock */
@@ -184,10 +186,45 @@ int main(void)
    /* USER CODE END SysInit */
 
    /* Initialize all configured peripherals */
-   MX_GPIO_Init();
+   //  MX_GPIO_Init();
    /* USER CODE BEGIN 2 */
    BSP_LED_Init(LED1);
    BSP_LED_Init(LED2);
+
+   /* Initialize the SDRAM */
+   BSP_SDRAM_Init(0);
+
+   /* Init Touch Screen */
+   if (TS_Init() != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
+
+   /* Initialize the LCD   */
+   if (LCD_Init() != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
+
+   /* Set the LCD Context */
+   Lcd_Ctx[0].ActiveLayer = 0;
+   Lcd_Ctx[0].PixelFormat = LCD_PIXEL_FORMAT_ARGB8888;
+   Lcd_Ctx[0].BppFactor = 4; /* 4 Bytes Per Pixel for ARGB8888 */
+   Lcd_Ctx[0].XSize = 800;
+   Lcd_Ctx[0].YSize = 480;
+   /* Disable DSI Wrapper in order to access and configure the LTDC */
+   __HAL_DSI_WRAPPER_DISABLE(&hlcd_dsi);
+
+   /* Initialize LTDC layer 0 iused for Hint */
+   LCD_LayertInit(0, LCD_FRAME_BUFFER);
+   UTIL_LCD_SetFuncDriver(&LCD_UTIL_Driver);
+
+   /* Enable DSI Wrapper so DSI IP will drive the LTDC */
+   __HAL_DSI_WRAPPER_ENABLE(&hlcd_dsi);
+
+   /* Clear display */
+   UTIL_LCD_Clear(APP_COLOR_BACKGROUND);
+
+   /*Refresh the LCD display*/
+   HAL_DSI_Refresh(&hlcd_dsi);
 
    /* USER CODE END 2 */
 
@@ -674,20 +711,6 @@ int32_t TS_Init(void)
  */
 
 /**
- * @brief  CPU L1-Cache enable.
- * @param  None
- * @retval None
- */
-static void CPU_CACHE_Enable(void)
-{
-   /* Enable I-Cache */
-   SCB_EnableICache();
-
-   /* Enable D-Cache */
-   SCB_EnableDCache();
-}
-
-/**
  * @brief  Configure the MPU attributes as Write Through for External SDRAM.
  * @note   The Base Address is 0xD0000000 .
  *         The Configured Region Size is 32MB because same as SDRAM size.
@@ -745,7 +768,7 @@ static void Error_Handler(void)
    /* USER CODE BEGIN Error_Handler_Debug */
    /* User can add his own implementation to report the HAL error return state
     */
-   BSP_LED_On(LED3);
+   BSP_LED_On(LED2);
    while (1) {
       ;
    } /* Blocking on error */
