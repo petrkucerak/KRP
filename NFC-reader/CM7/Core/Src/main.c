@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
  ******************************************************************************
  * @file           : main.c
@@ -15,52 +14,31 @@
  *
  ******************************************************************************
  */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
 #include "memorymap.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
+// BSP drivers includes
+#include "custom_lcd.h"
 
 /* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* USER CODE END PD */
-
 /* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+static void SystemClock_Config(void);
+static void Error_Handler(void);
+static void MPU_Config(void);
 
 /**
  * @brief  The application entry point.
@@ -69,14 +47,8 @@ void SystemClock_Config(void);
 int main(void)
 {
 
-   /* USER CODE BEGIN 1 */
-
-   /* USER CODE END 1 */
-   /* USER CODE BEGIN Boot_Mode_Sequence_0 */
    int32_t timeout;
-   /* USER CODE END Boot_Mode_Sequence_0 */
 
-   /* USER CODE BEGIN Boot_Mode_Sequence_1 */
    /* Wait until CPU2 boots and enters in stop mode or timeout*/
    timeout = 0xFFFF;
    while ((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0))
@@ -84,7 +56,6 @@ int main(void)
    if (timeout < 0) {
       Error_Handler();
    }
-   /* USER CODE END Boot_Mode_Sequence_1 */
    /* MCU
     * Configuration--------------------------------------------------------*/
 
@@ -92,15 +63,13 @@ int main(void)
     */
    HAL_Init();
 
-   /* USER CODE BEGIN Init */
-
-   /* USER CODE END Init */
+   /* Configure the MPU attributes as Write Through for SDRAM*/
+   MPU_Config();
 
    /* Configure the system clock */
    SystemClock_Config();
-   /* USER CODE BEGIN Boot_Mode_Sequence_2 */
    /* When system initialization is finished, Cortex-M7 will release Cortex-M4
-   by means of HSEM notification */
+by means of HSEM notification */
    /*HW semaphore Clock enable*/
    __HAL_RCC_HSEM_CLK_ENABLE();
    /*Take HSEM */
@@ -114,105 +83,202 @@ int main(void)
    if (timeout < 0) {
       Error_Handler();
    }
-   /* USER CODE END Boot_Mode_Sequence_2 */
 
-   /* USER CODE BEGIN SysInit */
-
-   /* USER CODE END SysInit */
+   if (BSP_SDRAM_Init(0) != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
 
    /* Initialize all configured peripherals */
-   MX_GPIO_Init();
-   /* USER CODE BEGIN 2 */
+   //  MX_GPIO_Init();
 
-   /* USER CODE END 2 */
+   BSP_LED_Init(LED1);
+   BSP_LED_Init(LED2);
+
+   /* Initialize the SDRAM */
+   BSP_SDRAM_Init(0);
+
+   /* Init Touch Screen */
+   if (TS_Init() != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
+
+   /* Initialize the LCD   */
+   if (LCD_Init() != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
+
+   LCD_InitScreen();
 
    /* Infinite loop */
-   /* USER CODE BEGIN WHILE */
    while (1) {
-      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
-      HAL_Delay(1000);
-      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
-      HAL_Delay(1000);
-      /* USER CODE END WHILE */
 
-      /* USER CODE BEGIN 3 */
+      BSP_LED_On(LED1);
+      BSP_LED_Off(LED2);
+      HAL_Delay(1000);
+
+      BSP_LED_Off(LED1);
+      BSP_LED_On(LED2);
+      HAL_Delay(1000);
    }
-   /* USER CODE END 3 */
 }
 
 /**
- * @brief System Clock Configuration
+ * @brief  System Clock Configuration
+ *         The system Clock is configured as follow :
+ *            System Clock source            = PLL (HSE)
+ *            SYSCLK(Hz)                     = 400000000 (CM7 CPU Clock)
+ *            HCLK(Hz)                       = 200000000 (CM4 CPU, AXI and
+ * AHBs Clock) AHB Prescaler                  = 2 D1 APB3 Prescaler = 2 (APB3
+ * Clock  100MHz) D2 APB1 Prescaler              = 2 (APB1 Clock  100MHz) D2
+ * APB2 Prescaler              = 2 (APB2 Clock  100MHz) D3 APB4 Prescaler = 2
+ * (APB4 Clock  100MHz) HSE Frequency(Hz)              = 25000000 PLL_M = 5
+ *            PLL_N                          = 160
+ *            PLL_P                          = 2
+ *            PLL_Q                          = 4
+ *            PLL_R                          = 2
+ *            VDD(V)                         = 3.3
+ *            Flash Latency(WS)              = 4
+ * @param  None
  * @retval None
  */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
-   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+   RCC_ClkInitTypeDef RCC_ClkInitStruct;
+   RCC_OscInitTypeDef RCC_OscInitStruct;
+   HAL_StatusTypeDef ret = HAL_OK;
 
-   /** Supply configuration update enable
-    */
+   /*!< Supply configuration update enable */
    HAL_PWREx_ConfigSupply(PWR_DIRECT_SMPS_SUPPLY);
 
-   /** Configure the main internal regulator output voltage
-    */
+   /* The voltage scaling allows optimizing the power consumption when the
+    device is clocked below the maximum system frequency, to update the
+    voltage scaling value regarding system frequency refer to product
+    datasheet.  */
    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {
    }
 
-   /** Macro to configure the PLL clock source
-    */
-   __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSI);
+   /* Enable HSE Oscillator and activate PLL with HSE as source */
+   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+   RCC_OscInitStruct.HSIState = RCC_HSI_OFF;
+   RCC_OscInitStruct.CSIState = RCC_CSI_OFF;
+   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 
-   /** Initializes the RCC Oscillators according to the specified parameters
-    * in the RCC_OscInitTypeDef structure.
-    */
-   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-   RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
-   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+   RCC_OscInitStruct.PLL.PLLM = 5;
+   RCC_OscInitStruct.PLL.PLLN = 160;
+   RCC_OscInitStruct.PLL.PLLFRACN = 0;
+   RCC_OscInitStruct.PLL.PLLP = 2;
+   RCC_OscInitStruct.PLL.PLLR = 2;
+   RCC_OscInitStruct.PLL.PLLQ = 4;
+
+   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
+   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
+   ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+   if (ret != HAL_OK) {
       Error_Handler();
    }
 
-   /** Initializes the CPU, AHB and APB buses clocks
-    */
-   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
-                                 RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 |
-                                 RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
-   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+   /* Select PLL as system clock source and configure  bus clocks dividers */
+   RCC_ClkInitStruct.ClockType =
+       (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_D1PCLK1 |
+        RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1);
+
+   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
    RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
-   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV1;
-   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV1;
-   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
-   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
-
-   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
+   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
+   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
+   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
+   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
+   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
+   ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4);
+   if (ret != HAL_OK) {
       Error_Handler();
    }
-   HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSI, RCC_MCODIV_1);
+
+   /*
+    Note : The activation of the I/O Compensation Cell is recommended with
+    communication  interfaces (GPIO, SPI, FMC, QSPI ...)  when  operating at
+    high frequencies(please refer to product datasheet) The I/O Compensation
+    Cell activation  procedure requires :
+    - The activation of the CSI clock
+    - The activation of the SYSCFG clock
+    - Enabling the I/O Compensation Cell : setting bit[0] of register
+    SYSCFG_CCCSR
+    */
+
+   /*activate CSI clock mondatory for I/O Compensation Cell*/
+   __HAL_RCC_CSI_ENABLE();
+
+   /* Enable SYSCFG clock mondatory for I/O Compensation Cell */
+   __HAL_RCC_SYSCFG_CLK_ENABLE();
+
+   /* Enables the I/O Compensation Cell */
+   HAL_EnableCompensationCell();
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
 /**
- * @brief  This function is executed in case of error occurrence.
+ * @brief  Configure the MPU attributes as Write Through for External SDRAM.
+ * @note   The Base Address is 0xD0000000 .
+ *         The Configured Region Size is 32MB because same as SDRAM size.
+ * @param  None
  * @retval None
  */
-void Error_Handler(void)
+static void MPU_Config(void)
 {
-   /* USER CODE BEGIN Error_Handler_Debug */
+   MPU_Region_InitTypeDef MPU_InitStruct;
+
+   /* Disable the MPU */
+   HAL_MPU_Disable();
+
+   /* Configure the MPU as Strongly ordered for not defined regions */
+   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+   MPU_InitStruct.BaseAddress = 0x00;
+   MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+   MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+   MPU_InitStruct.SubRegionDisable = 0x87;
+   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+
+   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+   /* Configure the MPU attributes as WT for SDRAM */
+   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+   MPU_InitStruct.BaseAddress = SDRAM_DEVICE_ADDR;
+   MPU_InitStruct.Size = MPU_REGION_SIZE_32MB;
+   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+   MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+   MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+   MPU_InitStruct.SubRegionDisable = 0x00;
+   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+   /* Enable the MPU */
+   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+}
+
+/**
+ * @brief Error Handler
+ * @retval None
+ */
+static void Error_Handler(void)
+{
    /* User can add his own implementation to report the HAL error return state
     */
-   __disable_irq();
+   BSP_LED_On(LED2);
    while (1) {
-   }
-   /* USER CODE END Error_Handler_Debug */
+      ;
+   } /* Blocking on error */
 }
 
 #ifdef USE_FULL_ASSERT
@@ -225,10 +291,10 @@ void Error_Handler(void)
  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
-   /* USER CODE BEGIN 6 */
    /* User can add his own implementation to report the file name and line
-      number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
-      line) */
-   /* USER CODE END 6 */
+   number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
+   line) */
+   while (1) {
+   }
 }
 #endif /* USE_FULL_ASSERT */

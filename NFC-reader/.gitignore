@@ -23,3 +23,8 @@ _deps
 */build/**
 */tmp/**
 */src/*-stamp/**
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+
+# Ignore workespace
+workespace.code-workspace
