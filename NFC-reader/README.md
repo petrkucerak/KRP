@@ -55,12 +55,13 @@ git submodule update --recursive
 
 #### List of BSP components
 
-| name        | source                                                  | description      |
-| ----------- | ------------------------------------------------------- | ---------------- |
-| Common      | https://github.com/STMicroelectronics/stm32-bsp-common  | Common component |
-| ft6x06      | https://github.com/STMicroelectronics/stm32-ft6x06      | Touch screen     |
-| is42s32800j | https://github.com/STMicroelectronics/stm32-is42s32800j | SDRAM            |
-| otm8009a    | https://github.com/STMicroelectronics/stm32-otm8009a    | LCD              |
+| name        | source                                                     | description       | used version                              |
+| ----------- | ---------------------------------------------------------- | ----------------- | ----------------------------------------- |
+| STM32H747i  | https://github.com/STMicroelectronics/stm32h747i-disco-bsp | Library for DISCO | v3.5.1 - latest bring incompatible driver |
+| Common      | https://github.com/STMicroelectronics/stm32-bsp-common     | Common component  |
+| ft6x06      | https://github.com/STMicroelectronics/stm32-ft6x06         | Touch screen      |
+| is42s32800j | https://github.com/STMicroelectronics/stm32-is42s32800j    | SDRAM             |
+| otm8009a    | https://github.com/STMicroelectronics/stm32-otm8009a       | LCD               |
 
 
 ## Shorts
