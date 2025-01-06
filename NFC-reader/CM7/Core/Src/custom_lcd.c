@@ -1,3 +1,8 @@
+/**
+ * @file custom_lcd.c
+ * @brief Implementation of LCD initialization and configuration functions.
+ * @author Petr Kucera (kucerp28@fel.cvut.cz)
+ */
 #include "custom_lcd.h"
 
 extern LTDC_HandleTypeDef hlcd_ltdc;
@@ -304,6 +309,10 @@ int32_t DSI_IO_Read(uint16_t ChannelNbr, uint16_t Reg, uint8_t *pData,
    return ret;
 }
 
+/**
+ * @brief  Initializes the LCD peripherals (MSP initialization).
+ * @retval None
+ */
 void LCD_MspInit(void)
 {
    /** @brief Enable the LTDC clock */
@@ -361,6 +370,10 @@ int32_t TS_Init(void)
    return ret;
 }
 
+/**
+ * @brief  Initializes the LCD screen with default settings.
+ * @retval None
+ */
 void LCD_InitScreen(void)
 {
    /* Set the LCD Context */
