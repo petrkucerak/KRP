@@ -51,12 +51,18 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc_ex.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sdram.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_lcd.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_sdram.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_bus.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_ts.c
     ../Drivers/BSP/Components/otm8009a/otm8009a.c
+    ../Drivers/BSP/Components/otm8009a/otm8009a_reg.c
+    ../Drivers/BSP/Components/is42s32800j/is42s32800j.c
+    ../Drivers/BSP/Components/ft6x06/ft6x06.c
+    ../Drivers/BSP/Components/ft6x06/ft6x06_reg.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ../Utilities/lcd/stm32_lcd.c
     ./Core/Src/sysmem.c
