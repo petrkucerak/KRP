@@ -1,4 +1,4 @@
-/* USER CODE BEGIN Header */
+
 /**
  ******************************************************************************
  * @file    stm32h7xx_hal_conf.h
@@ -16,7 +16,7 @@
  *
  ******************************************************************************
  */
-/* USER CODE END Header */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32H7xx_HAL_CONF_H
 #define STM32H7xx_HAL_CONF_H
@@ -180,7 +180,7 @@ extern "C" {
 #define TICK_INT_PRIORITY ((uint32_t)0x0F) /*!< tick interrupt priority */
 #define USE_RTOS 0
 /* #define USE_SD_TRANSCEIVER 0U */ /*!< use uSD Transceiver */
-/* #define USE_SPI_CRC 0U      */  /*!< use CRC in SPI */
+/* #define USE_SPI_CRC 0U      */   /*!< use CRC in SPI */
 
 #define USE_HAL_ADC_REGISTER_CALLBACKS                                         \
    0U /* ADC register callback disabled     */

@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
  ******************************************************************************
  * @file           : main.c
@@ -15,56 +14,31 @@
  *
  ******************************************************************************
  */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
 #include "memorymap.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 // BSP drivers includes
 #include "custom_lcd.h"
 
-/* USER CODE END Includes */
-
 /* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* USER CODE END PD */
-
 /* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 static void MPU_Config(void);
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
@@ -73,14 +47,8 @@ static void MPU_Config(void);
 int main(void)
 {
 
-   /* USER CODE BEGIN 1 */
-
-   /* USER CODE END 1 */
-   /* USER CODE BEGIN Boot_Mode_Sequence_0 */
    int32_t timeout;
-   /* USER CODE END Boot_Mode_Sequence_0 */
 
-   /* USER CODE BEGIN Boot_Mode_Sequence_1 */
    /* Wait until CPU2 boots and enters in stop mode or timeout*/
    timeout = 0xFFFF;
    while ((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0))
@@ -88,7 +56,6 @@ int main(void)
    if (timeout < 0) {
       Error_Handler();
    }
-   /* USER CODE END Boot_Mode_Sequence_1 */
    /* MCU
     * Configuration--------------------------------------------------------*/
 
@@ -96,16 +63,13 @@ int main(void)
     */
    HAL_Init();
 
-   /* USER CODE BEGIN Init */
    /* Configure the MPU attributes as Write Through for SDRAM*/
    MPU_Config();
-   /* USER CODE END Init */
 
    /* Configure the system clock */
    SystemClock_Config();
-   /* USER CODE BEGIN Boot_Mode_Sequence_2 */
    /* When system initialization is finished, Cortex-M7 will release Cortex-M4
-   by means of HSEM notification */
+by means of HSEM notification */
    /*HW semaphore Clock enable*/
    __HAL_RCC_HSEM_CLK_ENABLE();
    /*Take HSEM */
@@ -119,15 +83,14 @@ int main(void)
    if (timeout < 0) {
       Error_Handler();
    }
-   /* USER CODE END Boot_Mode_Sequence_2 */
 
-   /* USER CODE BEGIN SysInit */
-
-   /* USER CODE END SysInit */
+   if (BSP_SDRAM_Init(0) != BSP_ERROR_NONE) {
+      Error_Handler();
+   }
 
    /* Initialize all configured peripherals */
    //  MX_GPIO_Init();
-   /* USER CODE BEGIN 2 */
+
    BSP_LED_Init(LED1);
    BSP_LED_Init(LED2);
 
@@ -146,10 +109,7 @@ int main(void)
 
    LCD_InitScreen();
 
-   /* USER CODE END 2 */
-
    /* Infinite loop */
-   /* USER CODE BEGIN WHILE */
    while (1) {
 
       BSP_LED_On(LED1);
@@ -159,15 +119,8 @@ int main(void)
       BSP_LED_Off(LED1);
       BSP_LED_On(LED2);
       HAL_Delay(1000);
-
-      /* USER CODE END WHILE */
-
-      /* USER CODE BEGIN 3 */
    }
-   /* USER CODE END 3 */
 }
-
-/* USER CODE BEGIN 4 */
 
 /**
  * @brief  System Clock Configuration
@@ -313,7 +266,6 @@ static void MPU_Config(void)
    /* Enable the MPU */
    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
-/* USER CODE END 4 */
 
 /**
  * @brief Error Handler
@@ -321,14 +273,12 @@ static void MPU_Config(void)
  */
 static void Error_Handler(void)
 {
-   /* USER CODE BEGIN Error_Handler_Debug */
    /* User can add his own implementation to report the HAL error return state
     */
    BSP_LED_On(LED2);
    while (1) {
       ;
    } /* Blocking on error */
-   /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef USE_FULL_ASSERT
@@ -341,12 +291,10 @@ static void Error_Handler(void)
  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
-   /* USER CODE BEGIN 6 */
    /* User can add his own implementation to report the file name and line
-      number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
-      line) */
+   number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
+   line) */
    while (1) {
    }
-   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
