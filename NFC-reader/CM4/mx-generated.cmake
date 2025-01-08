@@ -52,7 +52,15 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_usart.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
+    ../Middlewares/ST/rfal/Src/rfal_nfc.c
+    ../Middlewares/ST/rfal/Src/rfal_analogConfig.c
+    ../Middlewares/ST/rfal/Src/rfal_rfst25r95.c
+    ../Drivers/BSP/Components/ST25R95/st25r95_com.c
+    ../Drivers/BSP/Components/ST25R95/st25r95.c
     ../Drivers/BSP/Components/ST25R95/timer.c
+    ../Drivers/BSP/Components/ST25R95/st25r95_com.c
+    ../Drivers/BSP/Components/ST25R95/st25r95_com_spi.c
+    ../Drivers/BSP/Components/ST25R95/stream_dispatcher.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
