@@ -36,12 +36,13 @@
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-// SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef hspi5;
 
 // UART_HandleTypeDef huart2;
 // /* Private function prototypes
 // -----------------------------------------------*/ static void
-// MX_USART2_UART_Init(void); static void MX_SPI1_Init(void);
+// MX_USART2_UART_Init(void);
+static void MX_SPI5_Init(void);
 
 /**
  * @brief  The application entry point.
@@ -76,7 +77,7 @@ int main(void)
    MX_GPIO_Init();
    MX_ADC1_Init();
    // MX_USART2_UART_Init();
-   // MX_SPI1_Init();
+   MX_SPI5_Init();
 
    // /* Initialize log module */
    // logUsartInit(&huart2);
@@ -120,44 +121,126 @@ int main(void)
       HAL_GPIO_WritePin(NFC_LED2_GPIO_Port, NFC_LED2_Pin, GPIO_PIN_SET);
       HAL_GPIO_WritePin(NFC_LED3_GPIO_Port, NFC_LED3_Pin, GPIO_PIN_SET);
       HAL_GPIO_WritePin(NFC_LED4_GPIO_Port, NFC_LED4_Pin, GPIO_PIN_SET);
+
+      HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
       HAL_Delay(1000);
+
       HAL_GPIO_WritePin(NFC_LED1_GPIO_Port, NFC_LED1_Pin, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(NFC_LED2_GPIO_Port, NFC_LED2_Pin, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(NFC_LED3_GPIO_Port, NFC_LED3_Pin, GPIO_PIN_RESET);
       HAL_GPIO_WritePin(NFC_LED4_GPIO_Port, NFC_LED4_Pin, GPIO_PIN_RESET);
+
+      HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_RESET);
       HAL_Delay(1000);
 
       // demoCycle();
    }
 }
 
-// /**
-//  * @brief SPI1 Initialization Function
-//  * @param None
-//  * @retval None
-//  */
-// static void MX_SPI1_Init(void)
-// {
+/**
+ * @brief SPI5 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_SPI5_Init(void)
+{
 
-//    /* SPI1 parameter configuration*/
-//    hspi1.Instance = SPI1;
-//    hspi1.Init.Mode = SPI_MODE_MASTER;
-//    hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-//    hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-//    hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-//    hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-//    hspi1.Init.NSS = SPI_NSS_SOFT;
-//    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-//    hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-//    hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-//    hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-//    hspi1.Init.CRCPolynomial = 7;
-//    hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-//    hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-//    if (HAL_SPI_Init(&hspi1) != HAL_OK) {
-//       Error_Handler();
-//    }
-// }
+   /* SPI1 parameter configuration*/
+   hspi5.Instance = SPI5;
+   hspi5.Init.Mode = SPI_MODE_MASTER;
+   hspi5.Init.Direction = SPI_DIRECTION_2LINES;
+   hspi5.Init.DataSize = SPI_DATASIZE_8BIT;
+   hspi5.Init.CLKPolarity = SPI_POLARITY_LOW;
+   hspi5.Init.CLKPhase = SPI_PHASE_1EDGE;
+   hspi5.Init.NSS = SPI_NSS_SOFT;
+   hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+   hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
+   hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
+   hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+   hspi5.Init.CRCPolynomial = 7;
+   hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+   hspi5.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+   if (HAL_SPI_Init(&hspi5) != HAL_OK) {
+      Error_Handler();
+   }
+}
+
+void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
+{
+
+   GPIO_InitTypeDef GPIO_InitStruct = {0};
+   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+   if (spiHandle->Instance == SPI5) {
+      /* USER CODE BEGIN SPI5_MspInit 0 */
+
+      /* USER CODE END SPI5_MspInit 0 */
+
+      /** Initializes the peripherals clock
+       */
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI5;
+      PeriphClkInitStruct.Spi45ClockSelection = RCC_SPI45CLKSOURCE_D2PCLK1;
+      if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+         Error_Handler();
+      }
+
+      /* SPI5 clock enable */
+      __HAL_RCC_SPI5_CLK_ENABLE();
+
+      __HAL_RCC_GPIOK_CLK_ENABLE();
+      __HAL_RCC_GPIOJ_CLK_ENABLE();
+      /**SPI5 GPIO Configuration
+      PK0     ------> SPI5_SCK
+      PK1     ------> SPI5_NSS
+      PJ11     ------> SPI5_MISO
+      PJ10     ------> SPI5_MOSI
+      */
+      GPIO_InitStruct.Pin = ARD_D13_Pin | ARD_D10_Pin;
+      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+      HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
+
+      GPIO_InitStruct.Pin = ARD_D12_Pin | ARD_D11_Pin;
+      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+      HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
+
+      /* USER CODE BEGIN SPI5_MspInit 1 */
+
+      /* USER CODE END SPI5_MspInit 1 */
+   }
+}
+
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
+{
+
+   if (spiHandle->Instance == SPI5) {
+      /* USER CODE BEGIN SPI5_MspDeInit 0 */
+
+      /* USER CODE END SPI5_MspDeInit 0 */
+      /* Peripheral clock disable */
+      __HAL_RCC_SPI5_CLK_DISABLE();
+
+      /**SPI5 GPIO Configuration
+      PK0     ------> SPI5_SCK
+      PK1     ------> SPI5_NSS
+      PJ11     ------> SPI5_MISO
+      PJ10     ------> SPI5_MOSI
+      */
+      HAL_GPIO_DeInit(GPIOK, ARD_D13_Pin | ARD_D10_Pin);
+
+      HAL_GPIO_DeInit(GPIOJ, ARD_D12_Pin | ARD_D11_Pin);
+
+      /* USER CODE BEGIN SPI5_MspDeInit 1 */
+
+      /* USER CODE END SPI5_MspDeInit 1 */
+   }
+}
 
 // /**
 //  * @brief USART2 Initialization Function
@@ -189,7 +272,8 @@ int main(void)
 void Error_Handler(void)
 {
 
-   /* User can add his own implementation to report the HAL error return state
+   /* User can add his own implementation to report the HAL error return
+    * state
     */
    __disable_irq();
    while (1) {
@@ -208,7 +292,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
 
    /* User can add his own implementation to report the file name and line
-      number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
-      line) */
+      number, ex: printf("Wrong parameters value: file %s on line %d\r\n",
+      file, line) */
 }
 #endif /* USE_FULL_ASSERT */
