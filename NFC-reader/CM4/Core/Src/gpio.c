@@ -47,13 +47,15 @@ void MX_GPIO_Init(void)
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 
-   // NFC
+   // ~~~ NFC GPIO configuration ~~~
    /*Configure GPIO pin Output Level */
-   HAL_GPIO_WritePin(GPIOJ, NFC_LED1_Pin | NFC_LED2_Pin | NFC_LED4_Pin,
+   HAL_GPIO_WritePin(GPIOJ,
+                     NFC_LED1_Pin | NFC_LED2_Pin | NFC_LED4_Pin | nIRQ_IN_Pin,
                      GPIO_PIN_RESET);
    /*Configure GPIO pin Output Level */
    HAL_GPIO_WritePin(GPIOA, NFC_LED3_Pin, GPIO_PIN_RESET);
 
+   // LEDs
    /*Configure GPIO pins : NFC_LED1_Pin NFC_LED2_Pin NFC_LED4_Pin */
    GPIO_InitStruct.Pin = NFC_LED1_Pin | NFC_LED2_Pin | NFC_LED4_Pin;
    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -67,4 +69,18 @@ void MX_GPIO_Init(void)
    GPIO_InitStruct.Pull = GPIO_NOPULL;
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+   // nIRQ
+   /*Configure GPIO pin : nIRQ_OUT_Pin */
+   GPIO_InitStruct.Pin = nIRQ_OUT_Pin;
+   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+   GPIO_InitStruct.Pull = GPIO_NOPULL;
+   HAL_GPIO_Init(nIRQ_OUT_GPIO_Port, &GPIO_InitStruct);
+
+   /*Configure GPIO pins : nIRQ_IN_Pin */
+   GPIO_InitStruct.Pin = nIRQ_IN_Pin;
+   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+   GPIO_InitStruct.Pull = GPIO_NOPULL;
+   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+   HAL_GPIO_Init(nIRQ_IN_GPIO_Port, &GPIO_InitStruct);
 }

@@ -69,10 +69,6 @@ void Error_Handler(void);
 // #define SSI_0_GPIO_Port GPIOC
 // #define LED1_Pin GPIO_PIN_8
 // #define LED1_GPIO_Port GPIOA
-// #define nIRQ_IN_Pin GPIO_PIN_9
-// #define nIRQ_IN_GPIO_Port GPIOA
-// #define nIRQ_OUT_Pin GPIO_PIN_10
-// #define nIRQ_OUT_GPIO_Port GPIOA
 // #define TMS_Pin GPIO_PIN_13
 // #define TMS_GPIO_Port GPIOA
 // #define TCK_Pin GPIO_PIN_14
@@ -98,6 +94,13 @@ void Error_Handler(void);
 // MCU_LED4 (PB5, CN9) -> PJ4 (CN6)
 #define NFC_LED4_GPIO_Port GPIOJ
 #define NFC_LED4_Pin GPIO_PIN_4
+// IRQ_IN/OUT same pin as UART
+// UART_TX/IRQ_IN (PA9, CN5) -> PJ5 (CN5)
+#define nIRQ_IN_Pin GPIO_PIN_5
+#define nIRQ_IN_GPIO_Port GPIOJ
+// UART_RX/IRQ_OUT (PA10, C9) -> PJ3 (CN6)
+#define nIRQ_OUT_Pin GPIO_PIN_3
+#define nIRQ_OUT_GPIO_Port GPIOJ
 
 #ifdef __cplusplus
 }
