@@ -99,6 +99,12 @@ void Error_Handler(void);
 #define ARD_D11_Pin GPIO_PIN_10
 #define ARD_D11_GPIO_Port GPIOJ
 
+// ST-LINK USART
+#define STLINK_TX_Pin GPIO_PIN_10
+#define STLINK_TX_GPIO_Port GPIOA
+#define STLINK_RX_Pin GPIO_PIN_9
+#define STLINK_RX_GPIO_Port GPIOA
+
 #ifdef __cplusplus
 }
 #endif

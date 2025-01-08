@@ -16,6 +16,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../Drivers/CMSIS/Include
+    ../Drivers/BSP/Components/ST25R95
 )
 
 # Add sources to executable
@@ -23,6 +24,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/adc.c
+    ./Core/Src/logger.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
@@ -44,6 +46,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_usart.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
+    ../Drivers/BSP/Components/ST25R95/timer.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
