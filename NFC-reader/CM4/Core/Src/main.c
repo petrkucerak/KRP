@@ -213,9 +213,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
 {
 
    if (spiHandle->Instance == SPI5) {
-      /* USER CODE BEGIN SPI5_MspDeInit 0 */
 
-      /* USER CODE END SPI5_MspDeInit 0 */
       /* Peripheral clock disable */
       __HAL_RCC_SPI5_CLK_DISABLE();
 
@@ -228,10 +226,6 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
       HAL_GPIO_DeInit(GPIOK, ARD_D13_Pin | ARD_D10_Pin);
 
       HAL_GPIO_DeInit(GPIOJ, ARD_D12_Pin | ARD_D11_Pin);
-
-      /* USER CODE BEGIN SPI5_MspDeInit 1 */
-
-      /* USER CODE END SPI5_MspDeInit 1 */
    }
 }
 
@@ -276,9 +270,6 @@ void HAL_UART_MspInit(UART_HandleTypeDef *uartHandle)
    GPIO_InitTypeDef GPIO_InitStruct = {0};
    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
    if (uartHandle->Instance == USART1) {
-      /* USER CODE BEGIN USART1_MspInit 0 */
-
-      /* USER CODE END USART1_MspInit 0 */
 
       /** Initializes the peripherals clock
        */

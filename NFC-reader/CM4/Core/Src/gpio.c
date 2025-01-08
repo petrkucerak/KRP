@@ -88,13 +88,13 @@ void MX_GPIO_Init(void)
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    HAL_GPIO_Init(nIRQ_IN_GPIO_Port, &GPIO_InitStruct);
 
-   // SPI
-   /*Configure GPIO pins :  nSPI_SS_Pin */
-   GPIO_InitStruct.Pin = nSPI_SS_Pin;
+   // Interface PIN
+   /*Configure GPIO pin : SSI_0_Pin */
+   GPIO_InitStruct.Pin = SSI_0_Pin;
    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
    GPIO_InitStruct.Pull = GPIO_NOPULL;
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-   HAL_GPIO_Init(nSPI_SS_GPIO_Port, &GPIO_InitStruct);
+   HAL_GPIO_Init(SSI_0_GPIO_Port, &GPIO_InitStruct);
 
    // Push Button
    /*Configure GPIO pin : B1_Pin */

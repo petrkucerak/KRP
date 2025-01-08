@@ -64,30 +64,34 @@ void Error_Handler(void);
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 
-// MCU_LED1 (PA8 [CN9]) -> PJ0 [CN6]
+// MCU_LED1 (D7 [CN9]) -> PJ0 [CN6]
 #define NFC_LED1_GPIO_Port GPIOJ
 #define NFC_LED1_Pin GPIO_PIN_0
-// MCU_LED2 (PB10 [CN9]) -> PJ7 [CN6]
+// MCU_LED2 (D6 [CN9]) -> PJ7 [CN6]
 #define NFC_LED2_GPIO_Port GPIOJ
 #define NFC_LED2_Pin GPIO_PIN_7
-// MCU_LED3 (PB4 [CN9]) -> PA6 [CN6]
+// MCU_LED3 (D5 [CN9]) -> PA6 [CN6]
 #define NFC_LED3_GPIO_Port GPIOA
 #define NFC_LED3_Pin GPIO_PIN_6
-// MCU_LED4 (PB5 [CN9]) -> PJ4 [CN6]
+// MCU_LED4 (D4 [CN9]) -> PJ4 [CN6]
 #define NFC_LED4_GPIO_Port GPIOJ
 #define NFC_LED4_Pin GPIO_PIN_4
 
 // IRQ_IN/OUT same pin as UART
-// UART_TX/IRQ_IN (PA9 [CN5]) -> PJ5 [CN5]
+// UART_TX/IRQ_IN (D8 [CN5]) -> PJ5 [CN5]
 #define nIRQ_IN_Pin GPIO_PIN_5
 #define nIRQ_IN_GPIO_Port GPIOJ
-// UART_RX/IRQ_OUT (PA10 [C9]) -> PJ3 [CN6]
+// UART_RX/IRQ_OUT (D2 [NC9]) -> PJ3 [CN6]
 #define nIRQ_OUT_Pin GPIO_PIN_3
 #define nIRQ_OUT_GPIO_Port GPIOJ
 
-// SPI_CS_NFC (PB6 [CN5]) -> PK1
+// SPI_CS_NFC (D10 [CN5]) -> PK1
 #define nSPI_SS_Pin GPIO_PIN_1
 #define nSPI_SS_GPIO_Port GPIOK
+
+// Interface_Pin (D9 [CN5]) -> PJ6
+#define SSI_0_Pin GPIO_PIN_6
+#define SSI_0_GPIO_Port GPIOJ
 
 // SPI definitions
 #define ARD_D13_Pin GPIO_PIN_0
