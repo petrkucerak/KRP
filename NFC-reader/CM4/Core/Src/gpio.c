@@ -37,6 +37,7 @@ void MX_GPIO_Init(void)
    // NFC
    __HAL_RCC_GPIOJ_CLK_ENABLE();
    __HAL_RCC_GPIOK_CLK_ENABLE();
+   __HAL_RCC_GPIOC_CLK_ENABLE();
 
    /*Configure GPIO pin Output Level */
    HAL_GPIO_WritePin(GPIOI, LED3_Pin | LED4_Pin, GPIO_PIN_RESET);
@@ -94,5 +95,11 @@ void MX_GPIO_Init(void)
    GPIO_InitStruct.Pull = GPIO_NOPULL;
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    HAL_GPIO_Init(nSPI_SS_GPIO_Port, &GPIO_InitStruct);
-}
 
+   // Push Button
+   /*Configure GPIO pin : B1_Pin */
+   GPIO_InitStruct.Pin = B1_Pin;
+   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+   GPIO_InitStruct.Pull = GPIO_NOPULL;
+   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+}

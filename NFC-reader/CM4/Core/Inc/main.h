@@ -61,8 +61,8 @@ void Error_Handler(void);
 
 // NFC READER
 
-// #define B1_Pin GPIO_PIN_13
-// #define B1_GPIO_Port GPIOC
+#define B1_Pin GPIO_PIN_13
+#define B1_GPIO_Port GPIOC
 
 // MCU_LED1 (PA8 [CN9]) -> PJ0 [CN6]
 #define NFC_LED1_GPIO_Port GPIOJ
