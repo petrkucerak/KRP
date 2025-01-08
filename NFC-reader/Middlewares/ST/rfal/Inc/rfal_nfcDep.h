@@ -321,7 +321,7 @@ typedef struct {
     uint32_t          dFWT;       /*!< Delta FWT to be used (1/fc)                */
     uint8_t           LR;         /*!< Length Reduction coding the max payload    */
     uint16_t          FS;         /*!< Frame Size                                 */
-    rfalBitRate       DSI;        /*!< Bit Rate coding from Initiator  to Target  */
+    rfalBitRate       DSI_rate;        /*!< Bit Rate coding from Initiator  to Target  */
     rfalBitRate       DRI;        /*!< Bit Rate coding from Target to Initiator   */
     uint8_t           DID;        /*!< Device ID (RFAL_NFCDEP_DID_NO if no DID)   */
     uint8_t           NAD;        /*!< Node ADdress (RFAL_NFCDEP_NAD_NO if no NAD)*/
