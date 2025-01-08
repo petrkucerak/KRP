@@ -17,6 +17,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../Drivers/CMSIS/Include
     ../Drivers/BSP/Components/ST25R95
+    ../Middlewares/ST/rfal/Inc
 )
 
 # Add sources to executable
@@ -24,6 +25,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/adc.c
+    ./Core/Src/demo.c
+    ./Core/Src/demo_ce.c
     ./Core/Src/logger.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c

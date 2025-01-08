@@ -20,10 +20,11 @@
 #include "main.h"
 #include "adc.h"
 #include "gpio.h"
+#include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
-// #include "demo.h"
-// #include "platform.h"
+#include "demo.h"
+#include "platform.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -37,11 +38,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi5;
+UART_HandleTypeDef huart1;
 
-// UART_HandleTypeDef huart2;
-// /* Private function prototypes
-// -----------------------------------------------*/ static void
-// MX_USART2_UART_Init(void);
+/* Private function prototypes -----------------------------------------------*/
+static void MX_USART1_UART_Init(void);
 static void MX_SPI5_Init(void);
 
 /**
@@ -76,43 +76,43 @@ int main(void)
    /* Initialize all configured peripherals */
    MX_GPIO_Init();
    MX_ADC1_Init();
-   // MX_USART2_UART_Init();
+   MX_USART1_UART_Init();
    MX_SPI5_Init();
 
    // /* Initialize log module */
-   // logUsartInit(&huart2);
+   logUsartInit(&huart1);
 
-   // platformLog("\r\nWelcome to X-NUCLEO-NFC03A1 (SPI Interface)\r\n");
+   platformLog("\r\nWelcome NFC READER APP\r\n");
 
-   // /* Initalize RFAL */
-   // if (!demoIni()) {
-   //    /*
-   //     * in case the rfal initalization failed signal it by flashing all LED
-   //     * and stoping all operations
-   //     */
-   //    platformLog("Initialization failed..\r\n");
-   //    while (1) {
-   //       platformLedToogle(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
-   //       platformLedToogle(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
-   //       platformLedToogle(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
-   //       platformLedToogle(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
-   //       platformDelay(100);
-   //    }
-   // } else {
-   //    platformLog("Initialization succeeded..\r\n");
-   //    for (int i = 0; i < 6; i++) {
-   //       platformLedToogle(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
-   //       platformLedToogle(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
-   //       platformLedToogle(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
-   //       platformLedToogle(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
-   //       platformDelay(200);
-   //    }
+   /* Initalize RFAL */
+   if (!demoIni()) {
+      /*
+       * in case the rfal initalization failed signal it by flashing all LED
+       * and stoping all operations
+       */
+      platformLog("Initialization failed..\r\n");
+      while (1) {
+         platformLedToogle(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
+         platformLedToogle(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
+         platformLedToogle(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
+         platformLedToogle(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
+         platformDelay(100);
+      }
+   } else {
+      platformLog("Initialization succeeded..\r\n");
+      for (int i = 0; i < 6; i++) {
+         platformLedToogle(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
+         platformLedToogle(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
+         platformLedToogle(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
+         platformLedToogle(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
+         platformDelay(200);
+      }
 
-   //    platformLedOff(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
-   //    platformLedOff(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
-   //    platformLedOff(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
-   //    platformLedOff(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
-   // }
+      platformLedOff(PLATFORM_LED_A_PORT, PLATFORM_LED_A_PIN);
+      platformLedOff(PLATFORM_LED_B_PORT, PLATFORM_LED_B_PIN);
+      platformLedOff(PLATFORM_LED_F_PORT, PLATFORM_LED_F_PIN);
+      platformLedOff(PLATFORM_LED_V_PORT, PLATFORM_LED_V_PIN);
+   }
 
    /* Infinite loop */
 
@@ -147,7 +147,7 @@ int main(void)
 static void MX_SPI5_Init(void)
 {
 
-   /* SPI1 parameter configuration*/
+   /* SPI5 parameter configuration*/
    hspi5.Instance = SPI5;
    hspi5.Init.Mode = SPI_MODE_MASTER;
    hspi5.Init.Direction = SPI_DIRECTION_2LINES;
@@ -173,9 +173,6 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
    GPIO_InitTypeDef GPIO_InitStruct = {0};
    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
    if (spiHandle->Instance == SPI5) {
-      /* USER CODE BEGIN SPI5_MspInit 0 */
-
-      /* USER CODE END SPI5_MspInit 0 */
 
       /** Initializes the peripherals clock
        */
@@ -209,10 +206,6 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
       GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
       GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
       HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
-
-      /* USER CODE BEGIN SPI5_MspInit 1 */
-
-      /* USER CODE END SPI5_MspInit 1 */
    }
 }
 
@@ -242,28 +235,84 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
    }
 }
 
-// /**
-//  * @brief USART2 Initialization Function
-//  * @param None
-//  * @retval None
-//  */
-// static void MX_USART2_UART_Init(void)
-// {
+/**
+ * @brief USART1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_USART1_UART_Init(void)
+{
 
-//    huart2.Instance = USART2;
-//    huart2.Init.BaudRate = 115200;
-//    huart2.Init.WordLength = UART_WORDLENGTH_8B;
-//    huart2.Init.StopBits = UART_STOPBITS_1;
-//    huart2.Init.Parity = UART_PARITY_NONE;
-//    huart2.Init.Mode = UART_MODE_TX_RX;
-//    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-//    huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-//    huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-//    huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-//    if (HAL_UART_Init(&huart2) != HAL_OK) {
-//       Error_Handler();
-//    }
-// }
+   huart1.Instance = USART1;
+   huart1.Init.BaudRate = 115200;
+   huart1.Init.WordLength = UART_WORDLENGTH_8B;
+   huart1.Init.StopBits = UART_STOPBITS_1;
+   huart1.Init.Parity = UART_PARITY_NONE;
+   huart1.Init.Mode = UART_MODE_TX_RX;
+   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+   huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+   if (HAL_UART_Init(&huart1) != HAL_OK) {
+      Error_Handler();
+   }
+   if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) !=
+       HAL_OK) {
+      Error_Handler();
+   }
+   if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) !=
+       HAL_OK) {
+      Error_Handler();
+   }
+   if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK) {
+      Error_Handler();
+   }
+}
+
+void HAL_UART_MspInit(UART_HandleTypeDef *uartHandle)
+{
+
+   GPIO_InitTypeDef GPIO_InitStruct = {0};
+   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+   if (uartHandle->Instance == USART1) {
+      /* USER CODE BEGIN USART1_MspInit 0 */
+
+      /* USER CODE END USART1_MspInit 0 */
+
+      /** Initializes the peripherals clock
+       */
+      PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+      PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
+      if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+         Error_Handler();
+      }
+
+      /* USART1 clock enable */
+      __HAL_RCC_USART1_CLK_ENABLE();
+
+      __HAL_RCC_GPIOA_CLK_ENABLE();
+      /**USART1 GPIO Configuration
+      PA10     ------> USART1_RX
+      PA9     ------> USART1_TX
+      */
+      GPIO_InitStruct.Pin = STLINK_TX_Pin | STLINK_RX_Pin;
+      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+   }
+}
+
+void HAL_UART_MspDeInit(UART_HandleTypeDef *uartHandle)
+{
+
+   if (uartHandle->Instance == USART1) {
+      /* Peripheral clock disable */
+      __HAL_RCC_USART1_CLK_DISABLE();
+   }
+}
 
 /**
  * @brief  This function is executed in case of error occurrence.
