@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 #include "demo.h"
 #include "platform.h"
+#include "st25r95_com.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -81,6 +82,8 @@ int main(void)
 
    // /* Initialize log module */
    logUsartInit(&huart1);
+
+   HAL_Delay(100); // Allow the chip to complete its reset sequence
 
    platformLog("\r\nWelcome NFC READER APP\r\n");
 
@@ -155,14 +158,17 @@ static void MX_SPI5_Init(void)
    hspi5.Init.CLKPolarity = SPI_POLARITY_LOW;
    hspi5.Init.CLKPhase = SPI_PHASE_1EDGE;
    hspi5.Init.NSS = SPI_NSS_SOFT;
-   hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+   hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
    hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
    hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
    hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-   hspi5.Init.CRCPolynomial = 0x7;
-   hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
    hspi5.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+   hspi5.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+   hspi5.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+   hspi5.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+   hspi5.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
    hspi5.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+   hspi5.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
    hspi5.Init.IOSwap = SPI_IO_SWAP_DISABLE;
    if (HAL_SPI_Init(&hspi5) != HAL_OK) {
       Error_Handler();

@@ -99,6 +99,7 @@
 #define ST25R95_TAGDETECT_CALIBRATE       true             /*!< False: use default value, True: call calibration procedure */
 
 #define USE_LOGGER LOGGER_ON
+#define ST25R95_DEBUG
 /*
 ******************************************************************************
 * GLOBAL MACROS

@@ -139,15 +139,19 @@ ReturnCode st25r95SPIPollRead(uint32_t timeout)
 ReturnCode st25r95SPIPollSend(void)
 {
     ReturnCode retCode = ERR_NONE;
-    uint8_t response;
+    uint8_t response = 0;
     
-    
+    platformLog("st25r95SPIPollSend response: 0x%x\r\n", response);
     platformSpiSelect();
     st25r95SPISendReceiveByte(ST25R95_CONTROL_POLL);
     response = st25r95SPISendReceiveByte(ST25R95_CONTROL_POLL);
     platformSpiDeselect();
+
+    platformLog("st25r95SPIPollSend response: 0x%x\r\n", response);
+
     if (!ST25R95_POLL_DATA_CAN_BE_SEND(response))
     {
+        platformLog("st25r95SPIPollSend - ERR_TIMEOUT\r\n");
         retCode = ERR_TIMEOUT;
     }
     return (retCode);
@@ -187,7 +191,7 @@ ReturnCode st25r95SPISendCommandTypeAndLen(uint8_t *cmd, uint8_t *resp, uint16_t
             resp[ST25R95_CMD_RESULT_OFFSET] = st25r95SPISendReceiveByte(ST25R95_SPI_DUMMY_BYTE);
             resp[ST25R95_CMD_LENGTH_OFFSET] = st25r95SPISendReceiveByte(resp[ST25R95_CMD_RESULT_OFFSET]);
             len = resp[ST25R95_CMD_LENGTH_OFFSET];
-            /* compute len according to CR95HF DS § 4.4 */
+            /* compute len according to CR95HF DS ï¿½ 4.4 */
             if ((resp[ST25R95_CMD_RESULT_OFFSET] & 0x8F) == 0x80)
             {
                 len |= (((uint32_t)resp[ST25R95_CMD_RESULT_OFFSET]) & 0x60U) << 3U;
@@ -230,6 +234,8 @@ ReturnCode st25r95SPICommandEcho(void)
     /* 0 - Poll the ST25R95 to make sure data can be send */
     /* Used only in cas of ECHO Command as this command is sent just after the ST25R95 reset */
     retCode = st25r95SPIPollSend();
+
+    platformLog("st25r95SPICommandEcho retCode: 0x%x\r\n", retCode);
     
     if (retCode == ERR_NONE)
     {
@@ -251,7 +257,7 @@ ReturnCode st25r95SPICommandEcho(void)
             platformSpiSelect();
             st25r95SPISendReceiveByte(ST25R95_CONTROL_READ);    
             respBuffer[ST25R95_CMD_RESULT_OFFSET] = st25r95SPISendReceiveByte(ST25R95_SPI_DUMMY_BYTE);
-            /* Read 2 additional bytes. See  ST95HF DS §5.7 :
+            /* Read 2 additional bytes. See  ST95HF DS ï¿½5.7 :
              * The ECHO command (0x55) allows exiting Listening mode. 
              * In response to the ECHO command, the ST25R95 sends 0x55 + 0x8500 (error code of the Listening state cancelled by the MCU).
              */
@@ -376,7 +382,7 @@ ReturnCode st25r95SPICompleteRx(void)
     initialLen = len;
 #endif /* ST25R95_DEBUG */
 
-    /* compute len according to CR95HF DS § 4.4 */
+    /* compute len according to CR95HF DS ï¿½ 4.4 */
     if ((Result & 0x8F) == 0x80)
     {
         len |= (((uint32_t)Result) & 0x60) << 3;
