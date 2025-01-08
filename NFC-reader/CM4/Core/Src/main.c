@@ -155,7 +155,7 @@ static void MX_SPI5_Init(void)
    hspi5.Init.CLKPolarity = SPI_POLARITY_LOW;
    hspi5.Init.CLKPhase = SPI_PHASE_1EDGE;
    hspi5.Init.NSS = SPI_NSS_SOFT;
-   hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+   hspi5.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
    hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
    hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
    hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -233,9 +233,9 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
       PJ11     ------> SPI5_MISO
       PJ10     ------> SPI5_MOSI
       */
-      HAL_GPIO_DeInit(GPIOK, ARD_D13_Pin | ARD_D10_Pin);
+      HAL_GPIO_DeInit(GPIOK, GPIO_PIN_0 | GPIO_PIN_1);
 
-      HAL_GPIO_DeInit(GPIOJ, ARD_D12_Pin | ARD_D11_Pin);
+      HAL_GPIO_DeInit(GPIOJ, GPIO_PIN_10 | GPIO_PIN_11);
    }
 }
 
