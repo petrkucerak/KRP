@@ -21,6 +21,8 @@
 #include "adc.h"
 #include "gpio.h"
 
+#include "app_nfc7.h"
+
 /* Private includes ----------------------------------------------------------*/
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,16 +71,20 @@ int main(void)
    /* Initialize all configured peripherals */
    MX_GPIO_Init();
    MX_ADC1_Init();
+   MX_NFC7_Init();
 
    /* Infinite loop */
 
    while (1) {
-      HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
-      HAL_Delay(1000);
-      HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
-      HAL_Delay(1000);
+
+      MX_NFC7_Process();
+
+      // HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+      // HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
+      // HAL_Delay(1000);
+      // HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_RESET);
+      // HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
+      // HAL_Delay(1000);
    }
 }
 

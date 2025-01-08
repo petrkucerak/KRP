@@ -16,6 +16,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../Drivers/CMSIS/Include
+    ../Drivers/BSP/stm32h747i-disco-bsp
+    ../Drivers/BSP/NFC07A1
+    ../Drivers/BSP/Components/st25dvxxkc
+    ../Middlewares/ST/lib_nfc7/lib_NDEF/Core/inc
+    ../Middlewares/ST/lib_nfc7/Common/inc
 )
 
 # Add sources to executable
@@ -23,6 +28,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/adc.c
+    ./Core/Src/app_nfc7.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
