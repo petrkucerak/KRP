@@ -230,19 +230,22 @@ ReturnCode rfalInitialize(void)
 {
     /* Ensure that no previous operation is still ongoing */
     if( rfalChipIsBusy() )
-    {        
+    {   
+        platformLog(" ERR_REQUEST \r\n");     
         return ERR_REQUEST;
     }
     
     /* Initialize chip */
     if (st25r95Initialize() != ERR_NONE)
     {
+        platformLog(" ERR_SYSTEM1 \r\n");
         return (ERR_SYSTEM);
     }
     
     /* Check expected chip: ST25R95 */
     if(!st25r95CheckChipID())
     {
+        platformLog(" ERR_HW_MISMATCH \r\n");
         return ERR_HW_MISMATCH;
     }
     
@@ -276,6 +279,7 @@ ReturnCode rfalInitialize(void)
     #endif /* ST25R95_TAGDETECT_CAL */
     if (gRFAL.wum.CalTagDet == 0xFFU)
     {
+        platformLog(" ERR_SYSTEM2 \r\n");
         return ERR_SYSTEM;
     }
     return ERR_NONE;

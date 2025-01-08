@@ -141,7 +141,7 @@ ReturnCode rfalNfcInitialize( void )
     ReturnCode err;
     
     gNfcDev.state = RFAL_NFC_STATE_NOTINIT;
-    
+
     rfalAnalogConfigInitialize();              /* Initialize RFAL's Analog Configs */
     EXIT_ON_ERR( err, rfalInitialize() );      /* Initialize RFAL */
 
