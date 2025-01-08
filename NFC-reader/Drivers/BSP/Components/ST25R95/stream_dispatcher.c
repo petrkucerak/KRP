@@ -40,7 +40,7 @@
 #include <stdint.h>
 #include "st_stream.h"
 #include "stream_dispatcher.h"
-#include "stream_driver.h"
+// #include "stream_driver.h"
 #include "logger.h"
 #include "bootloader.h"
 #include "platform.h"
