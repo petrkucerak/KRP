@@ -159,9 +159,11 @@ static void MX_SPI5_Init(void)
    hspi5.Init.FirstBit = SPI_FIRSTBIT_MSB;
    hspi5.Init.TIMode = SPI_TIMODE_DISABLE;
    hspi5.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-   hspi5.Init.CRCPolynomial = 7;
+   hspi5.Init.CRCPolynomial = 0x7;
    hspi5.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
    hspi5.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+   hspi5.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+   hspi5.Init.IOSwap = SPI_IO_SWAP_DISABLE;
    if (HAL_SPI_Init(&hspi5) != HAL_OK) {
       Error_Handler();
    }
@@ -193,14 +195,22 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
       PJ11     ------> SPI5_MISO
       PJ10     ------> SPI5_MOSI
       */
-      GPIO_InitStruct.Pin = ARD_D13_Pin | ARD_D10_Pin;
+
+      GPIO_InitStruct.Pin = GPIO_PIN_0;
+      GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      // GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+      HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
+
+      GPIO_InitStruct.Pin = GPIO_PIN_1;
       GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
       GPIO_InitStruct.Pull = GPIO_NOPULL;
       GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
       GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
       HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
 
-      GPIO_InitStruct.Pin = ARD_D12_Pin | ARD_D11_Pin;
+      GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_10;
       GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
       GPIO_InitStruct.Pull = GPIO_NOPULL;
       GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

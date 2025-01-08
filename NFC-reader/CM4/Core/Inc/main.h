@@ -93,16 +93,6 @@ void Error_Handler(void);
 #define SSI_0_Pin GPIO_PIN_6
 #define SSI_0_GPIO_Port GPIOJ
 
-// SPI definitions
-#define ARD_D13_Pin GPIO_PIN_0
-#define ARD_D13_GPIO_Port GPIOK
-#define ARD_D10_Pin GPIO_PIN_1
-#define ARD_D10_GPIO_Port GPIOK
-#define ARD_D12_Pin GPIO_PIN_11
-#define ARD_D12_GPIO_Port GPIOJ
-#define ARD_D11_Pin GPIO_PIN_10
-#define ARD_D11_GPIO_Port GPIOJ
-
 // ST-LINK USART
 #define STLINK_TX_Pin GPIO_PIN_10
 #define STLINK_TX_GPIO_Port GPIOA
