@@ -23,6 +23,8 @@
 
 #include "app_nfc7.h"
 
+#include "cores_communication.h"
+
 /* Private includes ----------------------------------------------------------*/
 
 /* Private typedef -----------------------------------------------------------*/

@@ -26,6 +26,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
     ../Middlewares/ST/STM32_USB_Host_Library/Core/Inc
     ../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc
+    ../Common/Inc
 )
 
 # Add sources to executable
@@ -93,6 +94,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.c
     ../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Src/usbh_cdc.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
+    ../Common/Src/core_communication.c
     ../Utilities/lcd/stm32_lcd.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
