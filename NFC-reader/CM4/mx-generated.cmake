@@ -21,6 +21,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/BSP/Components/st25dvxxkc
     ../Middlewares/ST/lib_nfc7/lib_NDEF/Core/inc
     ../Middlewares/ST/lib_nfc7/Common/inc
+    ../Common/Inc
 )
 
 # Add sources to executable
@@ -62,6 +63,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Middlewares/ST/lib_nfc7/lib_NDEF/Core/src/tagtype4_wrapper.c
     ../Middlewares/ST/lib_nfc7/lib_NDEF/Core/src/tagtype3_wrapper.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
+    ../Common/Src/core_communication.c
     ./Core/Src/sysmem.c
     ./Core/Src/syscalls.c
     ./Core/Startup/startup_stm32h747xx_CM4.s

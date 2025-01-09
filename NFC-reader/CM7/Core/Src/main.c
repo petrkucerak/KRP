@@ -21,6 +21,7 @@
 #include "memorymap.h"
 #include "usart.h"
 #include <stdio.h>
+#include "cores_communication.h"
 
 #include "custom_lcd.h"
 // #include "usb_device.h"

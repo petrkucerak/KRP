@@ -1,13 +1,12 @@
-# NFC Reader
+# NFC Utils
 
-The goal of this project is to implemented smart NFC reader than communicated with PC via USB and could be controlled with build-in LCD display.
+The original goal of my project was to create a main control panel for operating a remote-controlled car. I had to change this goal because the STM32H747i-DISCO did not meet the requirements. 
 
-## Scripts
+I built the autonomous car on a different platform. 
+ 
+Therefore, I decided to focus on enabling the touch display and communication with an NFC reader peripheral. Specifically, this involves an extension board for Nucleo, the X-NUCLEO-NFC03A1.
 
-```sh
-cmake --build .
-cmake --build . && make clean && make # universal rebuild snippet
-```
+The entire project can be found in the repository: https://github.com/petrkucerak/KRP  
 
 ## Components
 
@@ -74,3 +73,11 @@ git submodule update --recursive
 | MSP   | MCU specific package                               |
 | SDRAM | SDRAM external memory                              |
 | SRAM  | SRAM external memory                               |
+
+
+## Scripts
+
+```sh
+cmake --build .
+cmake --build . && make clean && make # universal rebuild snippet
+```
