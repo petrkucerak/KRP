@@ -97,11 +97,11 @@ uint8_t LCD_Init(void)
    /* LTDC clock frequency = PLLLCDCLK = 42 Mhz */
    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
    PeriphClkInitStruct.PLL3.PLL3M = 5;
-   PeriphClkInitStruct.PLL3.PLL3N = 160;
+   PeriphClkInitStruct.PLL3.PLL3N = 100;
    PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
    PeriphClkInitStruct.PLL3.PLL3P = 2;
    PeriphClkInitStruct.PLL3.PLL3Q = 2;
-   PeriphClkInitStruct.PLL3.PLL3R = 19;
+   PeriphClkInitStruct.PLL3.PLL3R = 25;
    PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
    PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;
    HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
@@ -155,12 +155,12 @@ uint8_t LCD_Init(void)
    HAL_DSI_Start(&(hlcd_dsi));
 
    /* Configure DSI PHY HS2LP and LP2HS timings */
-   PhyTimings.ClockLaneHS2LPTime = 35;
-   PhyTimings.ClockLaneLP2HSTime = 35;
-   PhyTimings.DataLaneHS2LPTime = 35;
-   PhyTimings.DataLaneLP2HSTime = 35;
+   PhyTimings.ClockLaneHS2LPTime = 50;
+   PhyTimings.ClockLaneLP2HSTime = 50;
+   PhyTimings.DataLaneHS2LPTime = 50;
+   PhyTimings.DataLaneLP2HSTime = 50;
    PhyTimings.DataLaneMaxReadTime = 0;
-   PhyTimings.StopWaitTime = 10;
+   PhyTimings.StopWaitTime = 20;
    HAL_DSI_ConfigPhyTimer(&hlcd_dsi, &PhyTimings);
 
    /* Initialize the OTM8009A LCD Display IC Driver (KoD LCD IC Driver) */
