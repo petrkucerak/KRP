@@ -8,15 +8,17 @@ Therefore, I decided to focus on enabling the touch display and communication wi
 
 The entire project can be found in the repository: https://github.com/petrkucerak/KRP  
 
-## Components
 
-### LCD controlling
+## LCD Display
 
-Using DSI and LTDC component. DSI Host can works in modes:
-- adapted command mode (**DBI**) - using LTDC interface - *using in my project*
-- video mode (**DPI**) - using LTDC interface
-- APB slave interface - can operate concurrently with either LTDC interface in video or adapted command mode
-- Video mode pattern generator - using for testing
+The DISCO board features a built-in display, **B-LCD40-DSI1**, with the **OTM8009A** driver. It supports several modes of operation:
+
+- **Adapted Command Mode (DBI)**: Using the LTDC interface (used in my project).
+- **Video Mode (DPI)**: Using the LTDC interface.
+- **APB Slave Interface**: Can operate concurrently with either LTDC interface in video or adapted command mode.
+- **Video Mode Pattern Generator**: Used for testing.
+
+In my project, I use the **DBI** mode.
 
 > [!NOTE]
 > The display serial interface (**DSI**) is part of a group of communication protocols defined by the MIPI® Alliance. 
@@ -35,25 +37,31 @@ The adapted command mode, enables the system to input a stream of pixel from the
 
 Adapted command mode of operation supports: 16 bpp, 18 bpp, and 24 bpp RGB. In my project I choose 24 bpp.
 
-### OTM8009A
 
-The LCD (`B-LCD40-DSI1`) is controlled by `otm8009a` integrated driver.
+## X-NUCLEO-NFC03A1
 
+The **X-NUCLEO-NFC03A1** device is designed for reading and editing NFC and RFID devices. Communication is supported via **SPI** or **UART**. In my case, I chose **SPI**.
 
+The device was connected according to the documentation. Note that the Arduino extension pins on the DISCO board have different names compared to those on the Nucleo board.
 
-### BSP components
+Unfortunately, I was unable to get this device operational. It was supposed to wake up and start transmitting after a 10 ms logic signal, but this never happened, even after verifying the incoming signal using a simple oscilloscope.
 
-BSP components are imported as a submodule. To initialize them use command
+The development branch for this component remains open:  
+[GitHub Repository - NFC Reader Development Branch](https://github.com/petrkucerak/KRP/tree/6-nfc-reader).
 
-```sh
-git submodule update --recursive
-```
+To facilitate easier debugging for this component, I implemented a **logger** that uses **USART1** to send data to a serial console via **STLINK**.
 
-> [!WARNING]
-> Regeneration code with using STM32CubeMX remove BSP components from CMake list files. So, do not forget return origin BSP source files imports. Relative to [CM7/mx-generated.cmake](CM7/mx-generated.cmake)
+## X-NUCLEO-NFC07A1
 
-#### List of BSP components
+As an alternative, I decided to use a simpler device, **X-NUCLEO-NFC07A1**, which serves as a **dynamic NFC tag**. Communication with this device is much simpler, thanks to the availability of a **BSP component**. 
 
+The device communicates via **I2C** and allows storing various types of information. In my case, I chose to store a link to a web page.
+
+## BSP components
+
+My project includes individual **BSP components** for device communication.
+
+#### List
 | name        | source                                                     | description       | used version                              |
 | ----------- | ---------------------------------------------------------- | ----------------- | ----------------------------------------- |
 | STM32H747i  | https://github.com/STMicroelectronics/stm32h747i-disco-bsp | Library for DISCO | v3.5.1 - latest bring incompatible driver |
@@ -61,6 +69,55 @@ git submodule update --recursive
 | ft6x06      | https://github.com/STMicroelectronics/stm32-ft6x06         | Touch screen      |
 | is42s32800j | https://github.com/STMicroelectronics/stm32-is42s32800j    | SDRAM             |
 | otm8009a    | https://github.com/STMicroelectronics/stm32-otm8009a       | LCD               |
+| NFC07A1     | https://www.st.com/en/ecosystems/x-nucleo-nfc07a1.html     | NFC dynamic tag   |
+
+
+## Middleware
+
+For communication with NFC devices, I use the **LIB-NFC7** library, specifically designed for dynamic RFID tags.  
+[LIB-NFC7 on GitHub](https://github.com/STMicroelectronics/x-cube-nfc7).
+
+## HAL Libraries
+
+Peripheral communication in my project uses the standard **HAL libraries** from ST. These are located in the `Drivers` directory and are shared between both cores.
+
+## Build System and Initialization
+
+I use **CMake** for building the project. Example commands:
+
+```sh
+cmake --build .
+cmake --build . && make clean && make  # Universal rebuild snippet
+```
+> [!WARNING]
+> Regeneration code with using STM32CubeMX remove BSP components from CMake list files. So, do not forget return origin BSP source files imports. Relative to [CM7/mx-generated.cmake](CM7/mx-generated.cmake)
+
+The repository also includes submodules. To download them, run:
+
+```sh
+git submodule update --recursive
+```
+
+## Core Task Distribution
+
+The DISCO kit contains two cores: a more powerful **CM7** and a less powerful **CM4**. I distributed the workload as follows:
+
+- **CM7**: Handles resource-intensive operations requiring speed, such as screen control and serial communication.
+- **CM4**: Manages NFC operations.
+
+The cores communicate via **shared memory**, where they can write and read from buffers allocated for each core. 
+
+Clock initialization is handled by **CM7**, which then notifies **CM4** via **HSEM** (hardware semaphore) once the initialization is complete.
+
+## Results
+
+The resulting application does not function as expected. While individual components work correctly, the combined system fails to perform as intended. This is likely due to delays in handling the display. In the final implementation, the display failed to meet the required time constraints, forcing me to extend the timeouts. However, these extended timeouts slowed the application to the point of failure.
+
+Despite this, the following components are functional:
+
+- **NFC07A1**
+- **LCD Display** (with touch controls)
+- **Inter-core Communication**
 
 
 ## Shorts
@@ -73,11 +130,3 @@ git submodule update --recursive
 | MSP   | MCU specific package                               |
 | SDRAM | SDRAM external memory                              |
 | SRAM  | SRAM external memory                               |
-
-
-## Scripts
-
-```sh
-cmake --build .
-cmake --build . && make clean && make # universal rebuild snippet
-```
