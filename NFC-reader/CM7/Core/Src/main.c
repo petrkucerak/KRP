@@ -20,6 +20,7 @@
 #include "logger.h"
 #include "memorymap.h"
 #include "usart.h"
+#include <stdio.h>
 
 #include "custom_lcd.h"
 // #include "usb_device.h"
@@ -29,6 +30,37 @@
 /* Private includes ----------------------------------------------------------*/
 
 /* Private typedef -----------------------------------------------------------*/
+typedef enum {
+   WIN_SCREEN,
+   WAITING_SCENE,
+   RUNNING_SCENE,
+   FAILURE_SCENE
+} Scene_t;
+
+typedef struct {
+   uint32_t color;
+   uint8_t id;
+   uint8_t order;
+   uint8_t solved;
+} Block_t;
+
+typedef struct {
+   Scene_t scene;
+   uint8_t _delay;
+   uint16_t time_goal;
+   uint16_t time_done;
+   uint8_t time_speed;
+   uint8_t next_block_id;
+   Block_t blocks[3];
+   uint32_t timer_stamp;
+} App_t;
+
+typedef struct {
+   uint32_t lastTouchTimestamp;
+   uint8_t isDoubleTouch;
+} JoystickState;
+
+JoystickState joyState = {0, 0};
 
 /* Private define ------------------------------------------------------------*/
 
@@ -36,14 +68,32 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* Private macro -------------------------------------------------------------*/
+#define TRUE 1
+#define FALSE 0
 
-/* Private variables ---------------------------------------------------------*/
+#define DOUBLE_TOUCH_TIME 300 // 300 ms for double touch
 
-/* Private function prototypes -----------------------------------------------*/
+/* Private macro
+   -------------------------------------------------------------*/
+
+/* Private variables
+   ---------------------------------------------------------*/
+
+/* Private function prototypes
+   -----------------------------------------------*/
 static void SystemClock_Config(void);
 void Error_Handler(void);
 static void MPU_Config(void);
+
+// LCD
+static void APP_UpdateScene(App_t *app);
+static void APP_HandleTouch(TS_State_t *TS_State, App_t *app);
+static void APP_StartTimer(App_t *app);
+static void APP_UpdateTimer(App_t *app);
+static void APP_HandleJoystick(JOY_TypeDef joy, uint32_t JoyPin, App_t *app);
+
+static void LCD_Display_Time(App_t *app);
+static void LCD_Display_Cycles(App_t *app);
 
 /**
  * @brief  The application entry point.
@@ -97,6 +147,8 @@ by means of HSEM notification */
    MX_GPIO_Init();
    MX_USART1_UART_Init();
 
+   BSP_JOY_Init(JOY1, JOY_MODE_GPIO, JOY_ALL);
+
    // MX_USB_DEVICE_Init();
    // MX_USB_HOST_Init();
 
@@ -118,26 +170,252 @@ by means of HSEM notification */
 
    LCD_InitScreen();
 
-   uint8_t tx_buff[] = "Hello World! This is V-COM Port\r\n";
-   uint8_t tx_buff_len = sizeof(tx_buff);
+   App_t app;
+   app.scene = RUNNING_SCENE;
+   app.time_goal = 600;
+   app.time_done = 0;
+   app.time_speed = 0;
+   app._delay = 0;
+   app.blocks[0].color = LCD_COLOR_ARGB8888_BROWN;
+   app.blocks[0].id = 0;
+   app.blocks[0].order = 2;
+   app.blocks[0].solved = FALSE;
+   app.blocks[1].color = LCD_COLOR_ARGB8888_BLUE;
+   app.blocks[1].id = 1;
+   app.blocks[1].order = 7;
+   app.blocks[1].solved = FALSE;
+   app.blocks[2].color = LCD_COLOR_ARGB8888_DARKBLUE;
+   app.blocks[2].id = 0;
+   app.blocks[2].order = 6;
+   app.blocks[2].solved = FALSE;
 
+   APP_StartTimer(&app);
+
+   TS_State_t TS_State;
    /* Infinite loop */
    while (1) {
 
-      // BSP_LED_On(LED1);
-      // BSP_LED_Off(LED2);
-      HAL_Delay(1000);
+      BSP_TS_GetState(TS_INSTANCE, &TS_State);
 
-      // BSP_LED_Off(LED1);
-      // BSP_LED_On(LED2);
-      HAL_Delay(1000);
+      // Handle touch input
+      APP_HandleTouch(&TS_State, &app);
 
-      // CDC_Transmit_HS(tx_buff, tx_buff_len);
-      HAL_UART_Transmit(&huart1, tx_buff, tx_buff_len, 1000);
-      // platformLog("Hello world!\r\n");
+      // Handle joystick input
+      APP_HandleJoystick(JOY1, JOY_RIGHT, &app);
+      APP_HandleJoystick(JOY1, JOY_LEFT, &app);
+      APP_HandleJoystick(JOY1, JOY_UP, &app);
+
+      // Update timer and render
+      APP_UpdateTimer(&app);
+      APP_UpdateScene(&app);
    }
 }
 
+static void APP_HandleJoystick(JOY_TypeDef joy, uint32_t JoyPin, App_t *app)
+{
+   uint32_t now = HAL_GetTick();
+
+   if (BSP_JOY_GetState(joy, JoyPin) == 1) { // Joystick pressed
+      if (now - joyState.lastTouchTimestamp <= DOUBLE_TOUCH_TIME) {
+         joyState.isDoubleTouch = 1;
+      } else {
+         joyState.isDoubleTouch = 0;
+      }
+      joyState.lastTouchTimestamp = now;
+   }
+
+   if (joyState.isDoubleTouch) {
+      if (app->scene == WAITING_SCENE) {
+         app->time_speed = 1;
+         app->scene = RUNNING_SCENE;
+         app->_delay = TRUE;
+         APP_StartTimer(app);
+         BSP_LED_On(LED1);
+         BSP_LED_On(LED2);
+      }
+
+      // Double touch detected, handle logic
+      if (JoyPin == JOY_RIGHT) {
+         if (app->next_block_id == app->blocks[0].order) {
+            app->blocks[0].solved = TRUE;
+            app->next_block_id += 1;
+         } else {
+            app->time_speed *= 2;
+         }
+         app->_delay = 1;
+      } else if (JoyPin == JOY_LEFT) {
+         if (app->next_block_id == app->blocks[0].order) {
+            app->blocks[1].solved = TRUE;
+            app->next_block_id += 1;
+         } else {
+            app->time_speed *= 2;
+         }
+         app->_delay = 1;
+      } else if (JoyPin == JOY_UP) {
+         if (app->next_block_id == app->blocks[0].order) {
+            app->blocks[2].solved = TRUE;
+            app->next_block_id += 1;
+         } else {
+            app->time_speed *= 2;
+         }
+         app->_delay = 1;
+      }
+      joyState.isDoubleTouch = 0; // Reset double touch flag
+      if (app->next_block_id == 3) {
+         app->scene = WIN_SCREEN;
+      }
+   }
+}
+
+/**
+ * @brief The util function to determine if the touch is in the area. The
+ * examined area is in the shape of a square.
+ *
+ * @param s (TS_State_t) The structure returned from touch screen
+ * @param x_max
+ * @param x_min
+ * @param y_max
+ * @param y_min
+ * @return uint8_t
+ */
+uint8_t APP_HandleTouch_IsInInterval(TS_State_t *s, uint32_t x_max,
+                                     uint32_t x_min, uint32_t y_max,
+                                     uint32_t y_min)
+{
+   if (s->TouchX < x_max && s->TouchX > x_min && s->TouchY < y_max &&
+       s->TouchY > y_min)
+      return 1;
+   else
+      return 0;
+}
+
+static void APP_HandleTouch(TS_State_t *TS_State, App_t *app)
+{
+   if (TS_State->TouchDetected != 0U) {
+
+      /* Running scene */
+      if (app->scene == WAITING_SCENE) {
+         app->time_speed = 1;
+         app->scene = RUNNING_SCENE;
+         app->_delay = TRUE;
+         APP_StartTimer(app);
+      }
+
+      if (app->scene == RUNNING_SCENE) {
+
+         if (APP_HandleTouch_IsInInterval(TS_State, 640, 560, 260, 180)) {
+            if (app->next_block_id == app->blocks[0].order) {
+               app->blocks[0].solved = TRUE;
+               app->next_block_id += 1;
+            } else {
+               app->time_speed *= 2;
+            }
+            app->_delay = 1;
+         } else if (APP_HandleTouch_IsInInterval(TS_State, 440, 360, 260,
+                                                 180)) {
+            if (app->next_block_id == app->blocks[0].order) {
+               app->blocks[1].solved = TRUE;
+               app->next_block_id += 1;
+            } else {
+               app->time_speed *= 2;
+            }
+            app->_delay = 1;
+         } else if (APP_HandleTouch_IsInInterval(TS_State, 240, 160, 260,
+                                                 180)) {
+            if (app->next_block_id == app->blocks[0].order) {
+               app->blocks[2].solved = TRUE;
+               app->next_block_id += 1;
+            } else {
+               app->time_speed *= 2;
+            }
+            app->_delay = 1;
+         }
+
+         if (app->next_block_id == 3) {
+            app->scene = WIN_SCREEN;
+         }
+      }
+   }
+}
+
+/**
+ * @brief Start software timer thats work by sys ticks.
+ *
+ * @param app
+ */
+static void APP_StartTimer(App_t *app) { app->timer_stamp = HAL_GetTick(); }
+
+/**
+ * @brief Update software timer by sys tick value.
+ *
+ * @param app
+ */
+static void APP_UpdateTimer(App_t *app)
+{
+   if (app->time_speed != 0) {
+      uint32_t now = HAL_GetTick();
+      uint32_t diff = now - app->timer_stamp;
+      app->time_goal += (diff / 1000) * app->time_speed;
+      if (app->time_goal < app->time_done) {
+         app->scene = FAILURE_SCENE;
+         app->time_speed = 0;
+      }
+   }
+}
+
+/**
+ * @brief One of three main logic function thats render data on display.
+ *
+ * @param app
+ */
+static void APP_UpdateScene(App_t *app)
+{
+   LCD_Display_Time(app);
+
+   LCD_Display_Cycles(app);
+
+   /*Refresh the LCD display*/
+   HAL_Delay(10);
+   HAL_DSI_Refresh(&hlcd_dsi);
+   if (app->_delay) {
+      HAL_Delay(800);
+      app->_delay = 0;
+   }
+}
+
+static void LCD_Display_Cycles(App_t *app)
+{
+
+   if (!app->blocks[0].solved)
+      UTIL_LCD_FillCircle(600, 220, 40, APP_COLOR_BLUE);
+   else
+      UTIL_LCD_FillCircle(600, 220, 40, APP_COLOR_BACKGROUND);
+
+   if (!app->blocks[1].solved)
+      UTIL_LCD_FillCircle(400, 220, 40, APP_COLOR_YELLOW);
+   else
+      UTIL_LCD_FillCircle(400, 220, 40, APP_COLOR_BACKGROUND);
+   if (!app->blocks[2].solved)
+      UTIL_LCD_FillCircle(200, 220, 40, APP_COLOR_RED);
+   else
+      UTIL_LCD_FillCircle(200, 220, 40, APP_COLOR_BACKGROUND);
+}
+
+static void LCD_Display_Time(App_t *app)
+{
+   UTIL_LCD_SetFont(&FontAvenirNext20);
+   UTIL_LCD_SetTextColor(APP_COLOR_TEXT);
+   UTIL_LCD_SetBackColor(APP_COLOR_BACKGROUND);
+   char message[60];
+   if (app->scene != WIN_SCREEN && app->scene != FAILURE_SCENE) {
+      uint16_t tmp = app->time_goal - app->time_done;
+      sprintf(message, "%02d:%02d", tmp / 60, tmp % 60);
+   } else if (app->scene == FAILURE_SCENE)
+      sprintf(message, "GAME OVER");
+   else
+      sprintf(message, "Load NFC");
+   UTIL_LCD_DisplayStringAtLine(20, (uint8_t *)message);
+}
 /**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :
