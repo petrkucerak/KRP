@@ -21,6 +21,8 @@
 
 #include "custom_lcd.h"
 #include "usb_device.h"
+// #include "usb_host.h"
+#include "usbd_cdc_if.h"
 
 /* Private includes ----------------------------------------------------------*/
 
@@ -91,7 +93,9 @@ by means of HSEM notification */
 
    /* Initialize all configured peripherals */
    MX_GPIO_Init();
+
    MX_USB_DEVICE_Init();
+   // MX_USB_HOST_Init();
 
    BSP_LED_Init(LED1);
    BSP_LED_Init(LED2);
@@ -111,6 +115,9 @@ by means of HSEM notification */
 
    LCD_InitScreen();
 
+   uint8_t tx_buff[] = "Hello World! This is V-COM Port\r\n";
+   uint8_t tx_buff_len = sizeof(tx_buff);
+
    /* Infinite loop */
    while (1) {
 
@@ -121,6 +128,8 @@ by means of HSEM notification */
       BSP_LED_Off(LED1);
       BSP_LED_On(LED2);
       HAL_Delay(1000);
+
+      CDC_Transmit_HS(tx_buff, tx_buff_len);
    }
 }
 
