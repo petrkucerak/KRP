@@ -90,7 +90,7 @@ cmake --build .
 cmake --build . && make clean && make  # Universal rebuild snippet
 ```
 > [!WARNING]
-> Regeneration code with using STM32CubeMX remove BSP components from CMake list files. So, do not forget return origin BSP source files imports. Relative to [CM7/mx-generated.cmake](CM7/mx-generated.cmake)
+> Regeneration code with using STM32CubeMX will damage whole project. So, do not use CubeMX generation.
 
 The repository also includes submodules. To download them, run:
 
