@@ -29,11 +29,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-extern DSI_HandleTypeDef hlcd_dsi;
-
 /* Private function prototypes -----------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
+extern DSI_HandleTypeDef hlcd_dsi;
+extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 
 /******************************************************************************/
 /*           Cortex Processor Interruption and Exception Handlers          */
@@ -114,3 +114,8 @@ void SysTick_Handler(void) { HAL_IncTick(); }
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32h7xx.s).                    */
 /******************************************************************************/
+
+/**
+ * @brief This function handles USB On The Go HS global interrupt.
+ */
+void OTG_HS_IRQHandler(void) { HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS); }

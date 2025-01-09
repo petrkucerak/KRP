@@ -60,6 +60,10 @@ void Error_Handler(void);
 #define ARD_A2_GPIO_Port GPIOA
 #define ARD_A3_Pin GPIO_PIN_1
 #define ARD_A3_GPIO_Port GPIOA
+#define STLINK_TX_Pin GPIO_PIN_10
+#define STLINK_TX_GPIO_Port GPIOA
+#define STLINK_RX_Pin GPIO_PIN_9
+#define STLINK_RX_GPIO_Port GPIOA
 
 #ifdef __cplusplus
 }

@@ -17,11 +17,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "logger.h"
 #include "memorymap.h"
+#include "usart.h"
+
+#include "custom_lcd.h"
+// #include "usb_device.h"
+// #include "usb_host.h"
+// #include "usbd_cdc_if.h"
 
 /* Private includes ----------------------------------------------------------*/
-// BSP drivers includes
-#include "custom_lcd.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -37,7 +42,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-static void Error_Handler(void);
+void Error_Handler(void);
 static void MPU_Config(void);
 
 /**
@@ -89,7 +94,11 @@ by means of HSEM notification */
    }
 
    /* Initialize all configured peripherals */
-   //  MX_GPIO_Init();
+   MX_GPIO_Init();
+   MX_USART1_UART_Init();
+
+   // MX_USB_DEVICE_Init();
+   // MX_USB_HOST_Init();
 
    BSP_LED_Init(LED1);
    BSP_LED_Init(LED2);
@@ -109,16 +118,23 @@ by means of HSEM notification */
 
    LCD_InitScreen();
 
+   uint8_t tx_buff[] = "Hello World! This is V-COM Port\r\n";
+   uint8_t tx_buff_len = sizeof(tx_buff);
+
    /* Infinite loop */
    while (1) {
 
-      BSP_LED_On(LED1);
-      BSP_LED_Off(LED2);
+      // BSP_LED_On(LED1);
+      // BSP_LED_Off(LED2);
       HAL_Delay(1000);
 
-      BSP_LED_Off(LED1);
-      BSP_LED_On(LED2);
+      // BSP_LED_Off(LED1);
+      // BSP_LED_On(LED2);
       HAL_Delay(1000);
+
+      // CDC_Transmit_HS(tx_buff, tx_buff_len);
+      HAL_UART_Transmit(&huart1, tx_buff, tx_buff_len, 1000);
+      // platformLog("Hello world!\r\n");
    }
 }
 
@@ -271,7 +287,7 @@ static void MPU_Config(void)
  * @brief Error Handler
  * @retval None
  */
-static void Error_Handler(void)
+void Error_Handler(void)
 {
    /* User can add his own implementation to report the HAL error return state
     */

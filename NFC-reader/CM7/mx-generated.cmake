@@ -22,6 +22,10 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/BSP/Components/otm8009a
     ../Drivers/BSP/Components/is42s32800j
     ../Utilities/lcd
+    ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/
+    ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+    ../Middlewares/ST/STM32_USB_Host_Library/Core/Inc
+    ../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc
 )
 
 # Add sources to executable
@@ -29,9 +33,18 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/memorymap.c
+    ./Core/Src/usart.c
     ./Core/Src/custom_lcd.c
+    ./Core/Src/logger.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
+    ./Core/Src/usb_device.c
+    ./Core/Src/usbd_cdc_if.c
+    ./Core/Src/usbd_conf.c
+    ./Core/Src/usbd_desc.c
+    ./Core/Src/usb_host.c
+    ./Core/Src/usbh_conf.c
+    ./Core/Src/usbh_platform.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c
@@ -39,6 +52,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dsi.c
@@ -54,6 +69,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sdram.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hcd.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_lcd.c
     ../Drivers/BSP/stm32h747i-disco-bsp/stm32h747i_discovery_sdram.c
@@ -64,6 +83,15 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/BSP/Components/is42s32800j/is42s32800j.c
     ../Drivers/BSP/Components/ft6x06/ft6x06.c
     ../Drivers/BSP/Components/ft6x06/ft6x06_reg.c
+    ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+    ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+    ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+    ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+    ../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.c
+    ../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c
+    ../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c
+    ../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.c
+    ../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Src/usbh_cdc.c
     ../Common/Src/system_stm32h7xx_dualcore_boot_cm4_cm7.c
     ../Utilities/lcd/stm32_lcd.c
     ./Core/Src/sysmem.c
