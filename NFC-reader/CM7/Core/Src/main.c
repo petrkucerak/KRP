@@ -20,6 +20,7 @@
 #include "logger.h"
 #include "memorymap.h"
 #include "usart.h"
+#include <stdio.h>
 
 #include "custom_lcd.h"
 // #include "usb_device.h"
@@ -29,6 +30,23 @@
 /* Private includes ----------------------------------------------------------*/
 
 /* Private typedef -----------------------------------------------------------*/
+typedef enum { WIN_SCREEN, WAITING_SCENE, RUNNING_SCENE } Scene_t;
+
+typedef struct {
+   uint32_t color;
+   uint8_t id;
+   uint8_t order;
+   uint8_t solved;
+} Block_t;
+
+typedef struct {
+   Scene_t scene;
+   uint8_t _delay;
+   uint16_t time_left;
+   uint8_t time_speed;
+   uint8_t next_block_id;
+   Block_t blocks[3];
+} App_t;
 
 /* Private define ------------------------------------------------------------*/
 
@@ -36,14 +54,25 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-/* Private macro -------------------------------------------------------------*/
+#define TRUE 1
+#define FALSE 0
 
-/* Private variables ---------------------------------------------------------*/
+/* Private macro
+   -------------------------------------------------------------*/
 
-/* Private function prototypes -----------------------------------------------*/
+/* Private variables
+   ---------------------------------------------------------*/
+
+/* Private function prototypes
+   -----------------------------------------------*/
 static void SystemClock_Config(void);
 void Error_Handler(void);
 static void MPU_Config(void);
+
+// LCD
+static void APP_UpdateScene(App_t *app);
+static void LCD_Display_Time(App_t *app);
+static void LCD_Display_Cycles(App_t *app);
 
 /**
  * @brief  The application entry point.
@@ -118,26 +147,93 @@ by means of HSEM notification */
 
    LCD_InitScreen();
 
-   uint8_t tx_buff[] = "Hello World! This is V-COM Port\r\n";
-   uint8_t tx_buff_len = sizeof(tx_buff);
+   App_t app;
+   app.scene = WAITING_SCENE;
+   app.time_left = 600;
+   app.time_speed = 0;
+   app._delay = 0;
+   app.blocks[0].color = LCD_COLOR_ARGB8888_BROWN;
+   app.blocks[0].id = 0;
+   app.blocks[0].order = 8;
+   app.blocks[0].solved = FALSE;
+   app.blocks[1].color = LCD_COLOR_ARGB8888_BLUE;
+   app.blocks[1].id = 1;
+   app.blocks[1].order = 7;
+   app.blocks[1].solved = FALSE;
+   app.blocks[2].color = LCD_COLOR_ARGB8888_DARKBLUE;
+   app.blocks[2].id = 2;
+   app.blocks[2].order = 6;
+   app.blocks[2].solved = FALSE;
 
+   TS_State_t TS_State;
    /* Infinite loop */
    while (1) {
 
-      // BSP_LED_On(LED1);
-      // BSP_LED_Off(LED2);
-      HAL_Delay(1000);
+      // BSP_TS_GetState(TS_INSTANCE, &TS_State);
 
-      // BSP_LED_Off(LED1);
-      // BSP_LED_On(LED2);
-      HAL_Delay(1000);
+      /* Handel touch && Update app struct */
+      // APP_HandleTouch(&TS_State, &app);
 
-      // CDC_Transmit_HS(tx_buff, tx_buff_len);
-      HAL_UART_Transmit(&huart1, tx_buff, tx_buff_len, 1000);
-      // platformLog("Hello world!\r\n");
+      /* Update timer */
+      // APP_UpdateTimer(&app);
+
+      /* Render display by app struct */
+      APP_UpdateScene(&app);
+
+      HAL_Delay(100);
+
+      /* Turn on toaster, in testing mode I used LED */
+      // APP_TurnPeripheries(&app);
    }
 }
 
+/**
+ * @brief One of three main logic function thats render data on display.
+ *
+ * @param app
+ */
+static void APP_UpdateScene(App_t *app)
+{
+   LCD_Display_Time(app);
+
+   LCD_Display_Cycles(app);
+
+   /*Refresh the LCD display*/
+   // HAL_Delay(10);
+   HAL_DSI_Refresh(&hlcd_dsi);
+   if (app->_delay) {
+      HAL_Delay(800);
+      app->_delay = 0;
+   }
+}
+
+static void LCD_Display_Cycles(App_t *app)
+{
+
+   if (!app->blocks[0].solved)
+      UTIL_LCD_FillCircle(600, 220, 40, APP_COLOR_BLUE);
+   else
+      UTIL_LCD_FillCircle(600, 220, 40, APP_COLOR_BACKGROUND);
+
+   if (!app->blocks[1].solved)
+      UTIL_LCD_FillCircle(400, 220, 40, APP_COLOR_YELLOW);
+   else
+      UTIL_LCD_FillCircle(400, 220, 40, APP_COLOR_BACKGROUND);
+   if (!app->blocks[2].solved)
+      UTIL_LCD_FillCircle(200, 220, 40, APP_COLOR_RED);
+   else
+      UTIL_LCD_FillCircle(200, 220, 40, APP_COLOR_BACKGROUND);
+}
+
+static void LCD_Display_Time(App_t *app)
+{
+   UTIL_LCD_SetFont(&FontAvenirNext20);
+   UTIL_LCD_SetTextColor(APP_COLOR_TEXT);
+   UTIL_LCD_SetBackColor(APP_COLOR_BACKGROUND);
+   char message[60];
+   sprintf(message, " %02d:%02d", app->time_left / 60, app->time_left % 60);
+   UTIL_LCD_DisplayStringAtLine(20, (uint8_t *)message);
+}
 /**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :

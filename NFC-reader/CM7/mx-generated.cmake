@@ -45,7 +45,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/usb_host.c
     ./Core/Src/usbh_conf.c
     ./Core/Src/usbh_platform.c
-    ./Core/Src/game.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c
