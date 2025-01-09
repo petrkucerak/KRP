@@ -108,7 +108,7 @@ void MX_NFC7_NDEF_URI_Init(void)
 
    /* Prepare URI NDEF message content */
    strcpy(URI.protocol, URI_ID_0x01_STRING);
-   strcpy(URI.URI_Message, "st.com/st25-demo");
+   strcpy(URI.URI_Message, "petrkucerak.cz/");
    strcpy(URI.Information, "\0");
 
    /* Write NDEF to EEPROM */

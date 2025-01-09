@@ -171,7 +171,7 @@ by means of HSEM notification */
    LCD_InitScreen();
 
    App_t app;
-   app.scene = WAITING_SCENE;
+   app.scene = RUNNING_SCENE;
    app.time_goal = 600;
    app.time_done = 0;
    app.time_speed = 0;
@@ -188,6 +188,8 @@ by means of HSEM notification */
    app.blocks[2].id = 0;
    app.blocks[2].order = 6;
    app.blocks[2].solved = FALSE;
+
+   APP_StartTimer(&app);
 
    TS_State_t TS_State;
    /* Infinite loop */
@@ -373,7 +375,7 @@ static void APP_UpdateScene(App_t *app)
    LCD_Display_Cycles(app);
 
    /*Refresh the LCD display*/
-   // HAL_Delay(10);
+   HAL_Delay(10);
    HAL_DSI_Refresh(&hlcd_dsi);
    if (app->_delay) {
       HAL_Delay(800);
