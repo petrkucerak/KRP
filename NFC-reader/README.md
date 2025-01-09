@@ -105,11 +105,55 @@ The DISCO kit contains two cores: a more powerful **CM7** and a less powerful **
 - **CM7**: Handles resource-intensive operations requiring speed, such as screen control and serial communication.
 - **CM4**: Manages NFC operations.
 
-The cores communicate via **shared memory**, where they can write and read from buffers allocated for each core. 
-
 Clock initialization is handled by **CM7**, which then notifies **CM4** via **HSEM** (hardware semaphore) once the initialization is complete.
 
-## Results
+### Core communication
+
+
+The cores communicate via **shared memory**, where they can write and read from buffers allocated for each core. 
+
+
+```mermaid
+sequenceDiagram
+    participant M7 as Core M7
+    participant M4 as Core M4
+    participant SharedMem as Shared Memory
+
+    M7->>SharedMem: put_to_m4()
+    activate SharedMem
+    SharedMem-->>M4: Data available
+    M4->>SharedMem: get_from_m4()
+    deactivate SharedMem
+
+    M4->>SharedMem: put_to_m7()
+    activate SharedMem
+    SharedMem-->>M7: Data available
+    M7->>SharedMem: get_from_m7()
+    deactivate SharedMem
+```
+
+## Results app
+
+The intended result was an application that would provide a key after pressing the correct sequence of buttons on the display or the correct sequence of joystick directions.
+
+### Schema
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Joystick
+    participant TouchScreen
+    participant App
+    participant LCD
+
+    User->>Joystick: Interact
+    Joystick->>App: Handle Input
+    User->>TouchScreen: Touch
+    TouchScreen->>App: Process Touch
+    App->>App: Update Scene
+    App->>LCD: Render Display
+    App->>App: Update Timer
+```
 
 The resulting application does not function as expected. While individual components work correctly, the combined system fails to perform as intended. This is likely due to delays in handling the display. In the final implementation, the display failed to meet the required time constraints, forcing me to extend the timeouts. However, these extended timeouts slowed the application to the point of failure.
 
