@@ -18,14 +18,15 @@
 #include "stm32h7xx_hal_ltdc.h"
 
 /* Screen resolution and timing parameters */
-#define VSYNC 1
-#define VBP 1
-#define VFP 1
-#define VACT 480
-#define HSYNC 1
-#define HBP 1
-#define HFP 1
-#define HACT 800
+#define VSYNC 10 // Vertical synchronization pulse (typically 5–10)
+#define VBP 20   // Vertical Back Porch (typically 8–20)
+#define VFP 20   // Vertical Front Porch (typically 8–20)
+#define VACT 480 // Active height of the display (do not change)
+
+#define HSYNC 40 // Horizontal synchronization pulse (typically 10–40)
+#define HBP 40   // Horizontal Back Porch (typically 20–40)
+#define HFP 40   // Horizontal Front Porch (typically 20–40)
+#define HACT 800 // Active width of the display (do not change)
 
 /* Touchscreen settings */
 #define TS_ACCURACY 2
