@@ -17,12 +17,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "logger.h"
 #include "memorymap.h"
+#include "usart.h"
 
 #include "custom_lcd.h"
-#include "usb_device.h"
+// #include "usb_device.h"
 // #include "usb_host.h"
-#include "usbd_cdc_if.h"
+// #include "usbd_cdc_if.h"
 
 /* Private includes ----------------------------------------------------------*/
 
@@ -93,8 +95,9 @@ by means of HSEM notification */
 
    /* Initialize all configured peripherals */
    MX_GPIO_Init();
+   MX_USART1_UART_Init();
 
-   MX_USB_DEVICE_Init();
+   // MX_USB_DEVICE_Init();
    // MX_USB_HOST_Init();
 
    BSP_LED_Init(LED1);
@@ -121,15 +124,17 @@ by means of HSEM notification */
    /* Infinite loop */
    while (1) {
 
-      BSP_LED_On(LED1);
-      BSP_LED_Off(LED2);
+      // BSP_LED_On(LED1);
+      // BSP_LED_Off(LED2);
       HAL_Delay(1000);
 
-      BSP_LED_Off(LED1);
-      BSP_LED_On(LED2);
+      // BSP_LED_Off(LED1);
+      // BSP_LED_On(LED2);
       HAL_Delay(1000);
 
-      CDC_Transmit_HS(tx_buff, tx_buff_len);
+      // CDC_Transmit_HS(tx_buff, tx_buff_len);
+      HAL_UART_Transmit(&huart1, tx_buff, tx_buff_len, 1000);
+      // platformLog("Hello world!\r\n");
    }
 }
 

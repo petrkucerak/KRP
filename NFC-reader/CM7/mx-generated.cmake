@@ -33,7 +33,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ./Core/Src/main.c
     ./Core/Src/gpio.c
     ./Core/Src/memorymap.c
+    ./Core/Src/usart.c
     ./Core/Src/custom_lcd.c
+    ./Core/Src/logger.c
     ./Core/Src/stm32h7xx_it.c
     ./Core/Src/stm32h7xx_hal_msp.c
     ./Core/Src/usb_device.c
@@ -50,6 +52,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
+    ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c
     ../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dsi.c

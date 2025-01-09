@@ -73,6 +73,9 @@ int main(void)
    MX_ADC1_Init();
    MX_NFC7_Init();
 
+   HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+   HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
+
    /* Infinite loop */
 
    while (1) {
